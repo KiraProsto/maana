@@ -1,0 +1,312 @@
+/* ------------------ HEADER (DESKTOP) ------------------ */
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 20;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 70px;
+}
+
+.headerCenter {
+  display: flex;
+  justify-content: center;
+}
+
+/* ЛОГОТИП */
+.logoLink {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: #000;
+  gap: 5px;
+}
+
+.logoImg {
+  height: 50px;
+}
+
+.logo {
+  font-size: 28px;
+  font-family: var(--font-global);
+}
+
+/* ПОИСК (ПК) */
+.searchWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search {
+  padding: 11px 30px;
+  border: 1px solid #000;
+  border-radius: 55px;
+  font-size: 18px;
+  font-family: var(--font-main);
+  width: 450px;
+  height: 50px;
+}
+
+.searchIcon {
+  position: absolute;
+  right: 30px;
+  width: 22px;
+  height: 22px;
+  opacity: 0.6;
+}
+
+.search:focus {
+  border-color: #f2b13b;
+  outline: none;
+  box-shadow: 0 0 8px rgba(242, 177, 59, 0.5);
+}
+
+/* НАВИГАЦИЯ (ПК) */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #000;
+  transition: color 0.3s ease;
+}
+
+.nav a:hover,
+.nav a:focus,
+.nav a:active {
+  color: var(--color-accent);
+}
+
+/* КОРЗИНА ДЛЯ ПК */
+.navCart {
+  display: block;
+}
+
+.bagIcon {
+  width: 25px;
+  cursor: pointer;
+}
+
+/* ИКОНКИ (моб/планшет) */
+.headerIcons {
+  display: none;
+  align-items: center;
+  gap: 20px;
+}
+
+.searchIconSmall {
+  width: 22px;
+  opacity: 0.7;
+  cursor: pointer;
+}
+
+/* БУРГЕР */
+.burger {
+  display: none;
+  width: 28px;
+  height: 28px;
+  background: #000;
+  mask: url('/icons/burger.png') center/contain no-repeat;
+  -webkit-mask: url('/icons/burger.png') center/contain no-repeat;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.burgerOpen {
+  mask: url('/icons/close.png') center/contain no-repeat;
+  -webkit-mask: url('/icons/close.png') center/contain no-repeat;
+}
+
+/* МОБИЛЬНЫЙ ПОИСК */
+.mobileSearch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+
+  padding: 12px 20px;
+  background: #fff;
+
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: all 0.35s ease;
+  border-top: 1px solid #eee;
+  z-index: 5;
+}
+
+.mobileSearchOpen {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.mobileSearch input {
+  font-family: var(--font-main);
+  width: 100%;
+  padding: 8px 18px;
+  border-radius: 35px;
+  border: 1px solid #000;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.mobileSearch input:focus {
+  border-color: #f2b13b;
+  box-shadow: 0 0 8px rgba(242, 177, 59, 0.5);
+  outline: none;
+}
+
+.mobileSearchClose {
+  font-size: 18px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: 0.2s;
+}
+
+.mobileSearchClose:hover {
+  opacity: 1;
+}
+
+/* ------------------ ПЛАНШЕТЫ ------------------ */
+@media (max-width: 1024px) {
+  .header {
+    padding: 18px 30px;
+    display: grid;
+    grid-template-columns: 40px 1fr 80px;
+  }
+
+  .logoImg {
+    height: 42px;
+  }
+
+  .logo {
+    font-size: 24px;
+  }
+
+  .searchWrapper {
+    display: none;
+  }
+
+  .navCart {
+    display: none;
+  }
+
+  .headerIcons {
+    display: flex;
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .nav {
+    display: none;
+    flex-direction: column;
+    gap: 22px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    padding: 25px;
+    border-top: 1px solid #eee;
+  }
+
+  .navOpen {
+    display: flex;
+  }
+
+  .mobileSearchOpen {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+}
+
+/* ------------------ ТЕЛЕФОНЫ ------------------ */
+@media (max-width: 768px) {
+  .header {
+    display: flex !important;
+    grid-template-columns: none !important;
+    padding: 10px 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .logoImg {
+    height: 30px;
+    width: 30px;
+  }
+
+  .logo {
+    font-size: 18px;
+  }
+
+  .headerIcons {
+    display: flex;
+    gap: 8px;
+  }
+
+  .burger {
+    width: 22px;
+    height: 22px;
+  }
+
+  .mobileSearch input {
+    font-size: 14px;
+    padding: 8px 16px;
+    border-radius: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .header {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  .logoImg {
+    height: 26px;
+    width: 26px;
+  }
+
+  .logo {
+    font-size: 16px;
+  }
+
+  .headerIcons {
+    gap: 8px;
+  }
+
+  .burger {
+    width: 20px;
+    height: 20px;
+  }
+
+  .headerIcons img,
+  .headerIcons svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mobileSearch input {
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 28px;
+  }
+}
