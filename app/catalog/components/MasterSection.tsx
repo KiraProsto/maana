@@ -37,6 +37,11 @@ export default function MasterSection() {
               src={item.mainImage}
               alt={item.title}
               fill
+              loading={index === 0 ? 'eager' : 'lazy'}
+              sizes="(max-width: 420px) 180px,
+         (max-width: 768px) 215px,
+         (max-width: 1024px) 270px,
+         310px"
               className={styles.masterCardImg}
             />
 
