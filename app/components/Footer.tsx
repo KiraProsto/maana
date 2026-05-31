@@ -11,7 +11,7 @@ export default function Footer() {
         <div className={styles.footerLeft}>
           <Image
             src="/logo.png"
-            alt="Логотип"
+            alt="Логотип МААНА"
             width={80}
             height={80}
             className={styles.footerLogoImg}
@@ -19,7 +19,10 @@ export default function Footer() {
           <div className={styles.footerLogoText}>MAAHA</div>
         </div>
 
-        <div className={styles.footerMenu}>
+        <nav
+          className={styles.footerMenu}
+          role="navigation"
+          aria-label="Навигация в футере">
           <div className={styles.footerCol}>
             <Link href="/#home">Главная</Link>
             <Link href="/catalog">Каталог</Link>
@@ -34,7 +37,7 @@ export default function Footer() {
             <Link href="/#delivery">Доставка</Link>
             <Link href="/#contacts">Контакты</Link>
           </div>
-        </div>
+        </nav>
       </div>
     </footer>
   );
