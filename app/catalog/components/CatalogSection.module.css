@@ -1,10 +1,7 @@
-/* --------- КАТАЛОГ ----------- */
-
 .catalog {
   color: #000;
 }
 
-/* ЛИНИЯ — КАТАЛОГ — ЛИНИЯ */
 .catalogTitleWrap {
   display: flex;
   align-items: center;
@@ -24,7 +21,6 @@
   letter-spacing: 1px;
 }
 
-/* СЕТКА БЛОКОВ */
 .catalogGrid {
   margin-top: 50px;
   display: grid;
@@ -47,7 +43,6 @@
   box-shadow: 0 15px 35px rgba(242, 177, 59, 0.35); /* var(--color-accent) с прозрачностью */
 }
 
-/* ЛЕВЫЙ БОЛЬШОЙ БЛОК */
 .catalogItemBig {
   width: 390px;
   height: 450px;
@@ -55,7 +50,6 @@
   overflow: hidden;
 }
 
-/* ПРАВАЯ КОЛОНКА */
 .catalogRight {
   display: grid;
   grid-template-columns: repeat(2, 230px);
@@ -63,7 +57,6 @@
   gap: 30px;
 }
 
-/* ВЕРХНИЕ КВАДРАТЫ */
 .catalogItemSquare {
   width: 230px;
   height: 230px;
@@ -71,7 +64,6 @@
   overflow: hidden;
 }
 
-/* НИЖНИЙ ПРЯМОУГОЛЬНИК */
 .catalogItemWide {
   grid-column: 1 / 3;
   width: 490px;
@@ -80,7 +72,6 @@
   overflow: hidden;
 }
 
-/* ВИДЕО */
 .catalogVideo {
   width: 100%;
   height: 100%;
@@ -88,7 +79,6 @@
   pointer-events: none;
 }
 
-/* ЗАТЕМНЕНИЕ + ТЕКСТ */
 .catalogOverlay {
   position: absolute;
   bottom: 0;
@@ -101,7 +91,6 @@
   font-family: var(--font-main);
 }
 
-/* ------------------ ПЛАНШЕТЫ (до 1024px) ------------------ */
 @media (max-width: 1024px) {
   .catalogTitle {
     font-size: 44px;
@@ -156,7 +145,6 @@
   }
 }
 
-/* ------------------ ТЕЛЕФОНЫ (до 768px) ------------------ */
 @media (max-width: 768px) {
   .catalogTitle {
     font-size: 32px;
@@ -204,7 +192,6 @@
   }
 }
 
-/* ------------------ МАЛЕНЬКИЕ ТЕЛЕФОНЫ (до 420px) ------------------ */
 @media (max-width: 420px) {
   .catalogTitle {
     font-size: 26px;
