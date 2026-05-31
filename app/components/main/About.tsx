@@ -4,8 +4,14 @@ import styles from './About.module.css';
 
 export default function About() {
   return (
-    <section className={styles.about} id="about" aria-label="О нас">
-      <h2 className={styles.aboutTitle}>О НАС</h2>
+    <section
+      className={styles.about}
+      id="about"
+      aria-labelledby="about-title"
+      role="region">
+      <h2 id="about-title" className={styles.aboutTitle}>
+        О НАС
+      </h2>
 
       <div className={styles.aboutRow}>
         <div className={styles.aboutText}>
@@ -35,6 +41,8 @@ export default function About() {
             muted
             loop
             playsInline
+            aria-hidden="true"
+            tabIndex={-1}
           />
         </div>
       </div>

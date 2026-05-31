@@ -5,17 +5,24 @@ import styles from './Composition.module.css';
 
 export default function Composition() {
   return (
-    <section className={styles.composition} id="composition">
-      <h2 className={styles.compositionTitle}>СОСТАВ СВЕЧЕЙ</h2>
+    <section
+      className={styles.composition}
+      id="composition"
+      role="region"
+      aria-labelledby="composition-title">
+      <h2 id="composition-title" className={styles.compositionTitle}>
+        СОСТАВ СВЕЧЕЙ
+      </h2>
 
       <div className={styles.compositionLayout}>
-        {/* ЛЕВАЯ КОЛОНКА */}
-        <div className={`${styles.compositionCol} ${styles.left}`}>
+        <div
+          className={`${styles.compositionCol} ${styles.left}`}
+          aria-label="Описание материалов свечи">
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
                 src="/icons/oil.png"
-                alt=""
+                alt="Иконка ароматических масел"
                 width={40}
                 height={40}
                 className={styles.compositionIcon}
@@ -35,7 +42,7 @@ export default function Composition() {
             <div className={styles.compositionItemHeader}>
               <Image
                 src="/icons/wax.png"
-                alt=""
+                alt="Иконка натурального воска"
                 width={40}
                 height={40}
                 className={styles.compositionIcon}
@@ -57,23 +64,27 @@ export default function Composition() {
           </div>
         </div>
 
-        {/* ЦЕНТР */}
         <div className={styles.compositionCenter}>
           <Image
             src="/main/candle.png"
             alt="Свеча МААНА"
             fill
+            sizes="(max-width: 420px) 250px,
+         (max-width: 768px) 250px,
+         (max-width: 1024px) 350px,
+         450px"
             className={styles.compositionCenterImg}
           />
         </div>
 
-        {/* ПРАВАЯ КОЛОНКА */}
-        <div className={`${styles.compositionCol} ${styles.right}`}>
+        <div
+          className={`${styles.compositionCol} ${styles.right}`}
+          aria-label="Описание дополнительных элементов свечи">
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
                 src="/icons/wick.png"
-                alt=""
+                alt="Иконка фитилей"
                 width={40}
                 height={40}
                 className={styles.compositionIcon}
@@ -99,7 +110,7 @@ export default function Composition() {
             <div className={styles.compositionItemHeader}>
               <Image
                 src="/icons/cup.png"
-                alt=""
+                alt="Иконка подсвечника"
                 width={40}
                 height={40}
                 className={styles.compositionIcon}

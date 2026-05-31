@@ -32,17 +32,26 @@ export default function Hits() {
   return (
     <section className={styles.hits} id="hits">
       <h2 className={styles.hitsTitle}>ХИТ ПРОДАЖ</h2>
-
-      <div className={styles.hitsList}>
+      <div
+        className={styles.hitsList}
+        role="list"
+        aria-live="off"
+        aria-label="Популярные товары">
         {hits.map((product, i) => (
           <div
             key={product.id}
-            className={`${styles.hitsItem} ${styles[positions[i]]}`}>
+            role="listitem"
+            className={`${styles.hitsItem} ${styles[positions[i]]}`}
+            aria-hidden={positions[i] !== 'center'}>
             <div className={styles.hitsImageWrapper}>
               <Image
                 src={product.mainImage}
-                alt={product.name}
+                alt={`Изображение товара: ${product.name}`}
                 fill
+                sizes="(max-width: 420px) 160px,
+                  (max-width: 768px) 190px,
+                  (max-width: 1024px) 290px,
+                  400px"
                 className={styles.hitsImg}
               />
             </div>
@@ -52,7 +61,10 @@ export default function Hits() {
         ))}
       </div>
 
-      <Link href="/catalog" className={styles.hitsLink}>
+      <Link
+        href="/catalog"
+        className={styles.hitsLink}
+        aria-label="Перейти в каталог товаров">
         Перейти в каталог →
       </Link>
     </section>
