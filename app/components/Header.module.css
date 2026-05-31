@@ -77,6 +77,13 @@
 .nav a {
   text-decoration: none;
   color: #000;
+  transition: color 0.3s ease;
+}
+
+.nav a:hover,
+.nav a:focus,
+.nav a:active {
+  color: var(--color-accent);
 }
 
 /* КОРЗИНА ДЛЯ ПК */
