@@ -1,0 +1,234 @@
+.delivery {
+  margin-top: 150px;
+}
+
+.deliveryTitle {
+  text-align: center;
+  font-size: 56px;
+  font-weight: 200;
+  margin-bottom: 80px;
+}
+
+.deliveryText {
+  text-align: center;
+}
+
+.deliverySteps {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 60px;
+  position: relative;
+}
+
+.deliveryStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.deliveryIcon {
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  margin-bottom: 15px;
+}
+
+.deliveryArrow {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.deliveryStep p {
+  font-size: 18px;
+  line-height: 1.4;
+  margin: 0;
+  text-align: center;
+}
+
+.step1 {
+  margin-top: 0;
+}
+
+.arrow1 {
+  margin-top: 150px;
+}
+
+.step2 {
+  margin-top: 210px;
+}
+
+.arrow2 {
+  margin-top: 360px;
+}
+
+.step3 {
+  margin-top: 380px;
+}
+
+.deliveryNote {
+  margin: 10px 0;
+  opacity: 0.8;
+  text-align: left;
+}
+
+@media (max-width: 1024px) {
+  .delivery {
+    margin-top: 110px;
+  }
+
+  .deliveryTitle {
+    font-size: 44px;
+    margin-bottom: 55px;
+  }
+
+  .deliverySteps {
+    gap: 35px;
+  }
+
+  .deliveryIcon {
+    width: 90px;
+    height: 90px;
+  }
+
+  .deliveryArrow {
+    width: 90px;
+    height: 90px;
+  }
+
+  .step2 {
+    margin-top: 150px;
+  }
+
+  .arrow1 {
+    margin-top: 110px;
+  }
+
+  .arrow2 {
+    margin-top: 260px;
+  }
+
+  .step3 {
+    margin-top: 280px;
+  }
+
+  .deliveryStep p {
+    font-size: 16px;
+  }
+
+  .deliveryNote {
+    margin-top: 35px;
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 768px) {
+  .delivery {
+    margin-top: 80px;
+  }
+
+  .deliveryTitle {
+    font-size: 36px;
+    margin-bottom: 40px;
+  }
+
+  .deliverySteps {
+    flex-direction: column;
+    gap: 28px;
+    width: 100%;
+  }
+
+  .deliveryIcon {
+    width: 75px;
+    height: 75px;
+  }
+
+  .deliveryArrow {
+    content: url('/icons/arrow_mobile.svg');
+    width: 80px;
+    height: 80px;
+  }
+
+  .step1,
+  .step2,
+  .step3,
+  .arrow1,
+  .arrow2 {
+    margin-top: 0;
+  }
+
+  .deliveryStep {
+    width: 100%;
+    max-width: 320px;
+    gap: 10px;
+  }
+
+  .step1 {
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .arrow1 {
+    align-self: center;
+  }
+
+  .step2 {
+    align-self: flex-end;
+    text-align: right;
+  }
+
+  .arrow2 {
+    align-self: center;
+    transform: scaleX(-1);
+  }
+
+  .step3 {
+    align-self: flex-start;
+    text-align: left;
+  }
+
+  .deliveryStep p {
+    font-size: 15px;
+  }
+
+  .deliveryNote {
+    margin-top: 30px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 420px) {
+  .delivery {
+    margin-top: 60px;
+  }
+
+  .deliveryTitle {
+    font-size: 30px;
+    margin-bottom: 30px;
+  }
+
+  .deliverySteps {
+    gap: 22px;
+  }
+
+  .deliveryIcon {
+    width: 60px;
+    height: 60px;
+  }
+
+  .deliveryArrow {
+    width: 55px;
+    height: 55px;
+  }
+
+  .deliveryStep p {
+    font-size: 14px;
+    line-height: 1.35;
+  }
+
+  .deliveryNote {
+    margin-top: 25px;
+    font-size: 13px;
+  }
+}
