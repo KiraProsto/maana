@@ -3,6 +3,7 @@ import './globals.css';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import styles from './layout.module.css';
+import { CartProvider } from './context/CartContext';
 
 export const metadata: Metadata = {
   title: 'МААНА | Свечи и мастер‑классы',
@@ -37,9 +38,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className={styles.body}>
-        <Header />
-        <main className={styles.main}>{children}</main>
-        <Footer />
+        <CartProvider>
+          <Header />
+          <main className={styles.main}>{children}</main>
+          <Footer />
+        </CartProvider>
       </body>
     </html>
   );

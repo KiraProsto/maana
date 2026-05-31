@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import styles from './ProductsSection.module.css';
+import { useCart } from '@/app/context/CartContext';
 
 interface IProduct {
   id: number;
@@ -17,46 +18,61 @@ interface IProps {
 }
 
 export default function ProductsSection({ id, title, products }: IProps) {
+  const { cart, add, remove, isReady } = useCart();
+
   return (
-    <section
-      id={id}
-      className={styles.interior}
-      role="region"
-      aria-labelledby={`${id}-title`}>
+    <section id={id} className={styles.interior}>
       <div className={styles.interiorTitleWrap}>
-        <h2 id={`${id}-title`} className={styles.interiorTitle}>
-          {title}
-        </h2>
-        <div className={styles.interiorLine} aria-hidden="true"></div>
+        <h2 className={styles.interiorTitle}>{title}</h2>
+        <div className={styles.interiorLine}></div>
       </div>
 
       <div className={styles.interiorGrid}>
-        {products.map((item) => (
-          <div
-            key={item.id}
-            className={styles.productCard}
-            role="button"
-            tabIndex={0}
-            aria-label={`Открыть товар: ${item.name}`}
-            onClick={() => console.log('Открыть модалку', item)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') console.log('Открыть модалку', item);
-            }}>
-            <Image
-              src={item.image}
-              alt={item.name}
-              width={260}
-              height={195}
-              className={styles.productCardImg}
-            />
+        {products.map((item) => {
+          const idStr = String(item.id);
+          const count = cart[idStr] || 0;
 
-            <div className={styles.productCardName}>{item.name}</div>
+          return (
+            <div key={item.id} className={styles.productCard}>
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={260}
+                height={195}
+                className={styles.productCardImg}
+                loading="eager"
+              />
 
-            <div className={styles.productCardPrice}>{item.price}</div>
+              <div className={styles.productCardName}>{item.name}</div>
+              <div className={styles.productCardPrice}>{item.price}</div>
 
-            <div className={styles.productCardBtn}>В корзину</div>
-          </div>
-        ))}
+              {/* ⭐ Пока корзина не загружена — ВСЕГДА кнопка */}
+              {!isReady ? (
+                <div className={styles.productCardBtn}>В корзину</div>
+              ) : count === 0 ? (
+                <div
+                  className={styles.productCardBtn}
+                  onClick={() => add(idStr)}>
+                  В корзину
+                </div>
+              ) : (
+                <div className={`${styles.productCardBtn} ${styles.counter}`}>
+                  <div
+                    className={styles.counterBtn}
+                    onClick={() => remove(idStr)}>
+                    −
+                  </div>
+
+                  <div className={styles.counterValue}>{count}</div>
+
+                  <div className={styles.counterBtn} onClick={() => add(idStr)}>
+                    +
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </section>
   );
