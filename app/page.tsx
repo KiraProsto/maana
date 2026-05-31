@@ -4,6 +4,7 @@ import About from './components/main/About';
 import Hits from './components/main/Hits';
 import Composition from './components/main/Composition';
 import Delivery from './components/main/Delivery';
+import Contacts from './components/main/Contacts';
 
 export const metadata: Metadata = {
   title: 'МААНА | Главная',
@@ -17,6 +18,7 @@ export default function HomePage() {
       <Hits />
       <Composition />
       <Delivery />
+      <Contacts />
     </>
   );
 }
