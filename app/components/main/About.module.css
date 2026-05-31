@@ -1,0 +1,141 @@
+/*----------------- ABOUT ----------------- */
+.about {
+  margin-top: 120px;
+}
+
+.aboutTitle {
+  font-size: 56px;
+  font-weight: 200;
+  margin-bottom: 30px;
+}
+
+.aboutRow {
+  display: flex;
+  align-items: stretch;
+  gap: 100px;
+}
+
+.aboutText {
+  flex: 0 0 45%;
+  align-self: center;
+}
+
+.aboutP {
+  font-size: 18px;
+  line-height: 1.6;
+  margin-bottom: 80px;
+}
+
+.aboutP:last-child {
+  margin-bottom: 0;
+}
+
+.aboutPRight {
+  text-align: right;
+}
+
+.aboutImage {
+  flex: 0 0 40%;
+  flex-shrink: 0;
+  width: 400px;
+  aspect-ratio: 1 / 1;
+  border-radius: 40px;
+  overflow: hidden;
+}
+
+.aboutVideo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 40px;
+}
+
+/* Планшеты (до 1024px) */
+@media (max-width: 1024px) {
+  .about {
+    margin-top: 90px;
+  }
+
+  .aboutTitle {
+    font-size: 42px;
+    margin-bottom: 40px;
+  }
+
+  .aboutRow {
+    flex-direction: column;
+    gap: 40px;
+  }
+
+  .aboutImage {
+    order: 1;
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto 20px;
+    border-radius: 30px;
+  }
+
+  .aboutText {
+    order: 2;
+    width: 100%;
+  }
+
+  .aboutP {
+    font-size: 17px;
+    line-height: 1.55;
+    margin-bottom: 35px;
+  }
+}
+
+/* Телефоны (до 768px) */
+@media (max-width: 768px) {
+  .about {
+    margin-top: 70px;
+  }
+
+  .aboutTitle {
+    font-size: 36px;
+    margin-bottom: 30px;
+  }
+
+  .aboutRow {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .aboutImage {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 15px;
+    border-radius: 25px;
+  }
+
+  .aboutP {
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 28px;
+  }
+}
+
+/* Маленькие телефоны (до 420px) */
+@media (max-width: 420px) {
+  .about {
+    margin-top: 50px;
+  }
+
+  .aboutTitle {
+    font-size: 30px;
+    margin-bottom: 25px;
+  }
+
+  .aboutImage {
+    max-width: 300px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .aboutP {
+    font-size: 14px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+}

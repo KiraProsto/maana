@@ -17,7 +17,7 @@ export default function Hero() {
       </div>
 
       <video className={styles.heroVideo} autoPlay muted loop playsInline>
-        <source src="/video/hero.mp4" type="video/mp4" />
+        <source src="/video/main/hero.mp4" type="video/mp4" />
       </video>
 
       <div className={styles.heroContent}>
