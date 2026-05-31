@@ -13,7 +13,9 @@ export default function Header() {
     <header className={styles.header}>
       {/* Бургер */}
       <button
-        aria-label="Меню"
+        aria-label="Открыть меню"
+        aria-expanded={menuOpen}
+        aria-controls="main-navigation"
         onClick={() => setMenuOpen(!menuOpen)}
         className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
         style={{
@@ -28,12 +30,16 @@ export default function Header() {
 
       {/* Центрированный логотип */}
       <div className={styles.headerCenter}>
-        <Link href="/" className={styles.logoLink}>
+        <Link
+          href="/"
+          className={styles.logoLink}
+          aria-label="Перейти на главную">
           <Image
             src="/logo.svg"
-            alt="Логотип"
+            alt=""
             width={50}
             height={50}
+            aria-hidden="true"
             className={styles.logoImg}
           />
           <span className={styles.logo}>MAAHA</span>
@@ -45,27 +51,40 @@ export default function Header() {
         <Image
           src="/icons/search-icon.svg"
           alt=""
+          aria-hidden="true"
           width={22}
           height={22}
           className={styles.searchIcon}
         />
-        <input type="text" className={styles.search} placeholder="Поиск" />
+        <input
+          type="text"
+          className={styles.search}
+          placeholder="Поиск"
+          aria-label="Поиск по сайту"
+        />
       </div>
 
       {/* Иконки справа — мобайл */}
       <div className={styles.headerIcons}>
-        <Image
-          src="/icons/search-icon.svg"
-          alt="Поиск"
-          width={22}
-          height={22}
-          className={styles.searchIconSmall}
+        <button
+          aria-label="Открыть поиск"
           onClick={() => setMobileSearchOpen(true)}
-        />
-        <Link href="/cart">
+          className={styles.iconButton}>
+          <Image
+            src="/icons/search-icon.svg"
+            alt=""
+            aria-hidden="true"
+            width={22}
+            height={22}
+            className={styles.searchIconSmall}
+          />
+        </button>
+
+        <Link href="/cart" aria-label="Корзина">
           <Image
             src="/icons/bag.svg"
-            alt="Корзина"
+            alt=""
+            aria-hidden="true"
             width={25}
             height={25}
             className={styles.bagIcon}
@@ -77,25 +96,34 @@ export default function Header() {
       <div
         className={`${styles.mobileSearch} ${
           mobileSearchOpen ? styles.mobileSearchOpen : ''
-        }`}>
-        <input type="text" placeholder="Поиск" />
-        <div
+        }`}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Мобильный поиск">
+        <input type="search" placeholder="Поиск" aria-label="Поиск по сайту" />
+        <button
           className={styles.mobileSearchClose}
+          aria-label="Закрыть поиск"
           onClick={() => setMobileSearchOpen(false)}>
           ✕
-        </div>
+        </button>
       </div>
 
       {/* Навигация — ПК */}
-      <nav className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
+      <nav
+        id="main-navigation"
+        role="navigation"
+        aria-label="Основная навигация"
+        className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
         <Link href="/">Главная</Link>
         <Link href="/catalog">Каталог</Link>
         <Link href="/#delivery">О доставке</Link>
 
-        <Link href="/cart" className={styles.navCart}>
+        <Link href="/cart" className={styles.navCart} aria-label="Корзина">
           <Image
             src="/icons/bag.svg"
-            alt="Корзина"
+            alt=""
+            aria-hidden="true"
             width={25}
             height={25}
             className={styles.bagIcon}
