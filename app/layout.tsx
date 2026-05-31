@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import './globals.css';
+import Header from './components/Header';
+import styles from './layout.module.css';
 
 export const metadata: Metadata = {
   title: 'МААНА | Свечи и мастер‑классы',
@@ -33,7 +35,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru">
-      <body className="min-h-screen flex flex-col font-main bg-white text-black antialiased">
+      <body className={styles.body}>
+        <Header />
         {children}
       </body>
     </html>
