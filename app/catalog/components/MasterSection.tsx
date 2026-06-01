@@ -1,10 +1,22 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import styles from './MasterSection.module.css';
 import { masterClasses } from '@/app/data/masterClasses';
+import MasterModal from './Modal/MasterModal';
+
+type MasterClass = (typeof masterClasses)[number];
 
 export default function MasterSection() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selected, setSelected] = useState<MasterClass | null>(null);
+
+  const openModal = (item: MasterClass) => {
+    setSelected(item);
+    setModalOpen(true);
+  };
+
   return (
     <section
       className={styles.master}
@@ -26,19 +38,16 @@ export default function MasterSection() {
             role="button"
             tabIndex={0}
             aria-label={`Открыть мастер-класс: ${item.title}`}
-            onClick={() => console.log('Открыть модалку', item)}
+            onClick={() => openModal(item)}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') console.log('Открыть модалку', item);
+              if (e.key === 'Enter') openModal(item);
             }}>
             <Image
               src={item.mainImage}
               alt={item.title}
               fill
               loading={index === 0 ? 'eager' : 'lazy'}
-              sizes="(max-width: 420px) 180px,
-         (max-width: 768px) 215px,
-         (max-width: 1024px) 270px,
-         310px"
+              sizes="(max-width: 420px) 180px, (max-width: 768px) 215px, (max-width: 1024px) 270px, 310px"
               className={styles.masterCardImg}
             />
 
@@ -46,7 +55,6 @@ export default function MasterSection() {
 
             <div className={styles.masterCardBottom}>
               <div className={styles.masterCardTitle}>{item.title}</div>
-
               <div className={styles.masterCardTime}>
                 <Image
                   src="/icons/time.svg"
@@ -61,6 +69,12 @@ export default function MasterSection() {
           </div>
         ))}
       </div>
+
+      <MasterModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        item={selected}
+      />
     </section>
   );
 }
