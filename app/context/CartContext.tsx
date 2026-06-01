@@ -10,6 +10,7 @@ interface CartContextValue {
   cart: Cart;
   add: (id: string) => void;
   remove: (id: string) => void;
+  removeAll: (id: string) => void;
   isReady: boolean;
 }
 
@@ -20,18 +21,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const load = () => {
-      try {
-        const saved = localStorage.getItem('cart');
-        if (saved) {
-          setCart(JSON.parse(saved));
-        }
-      } finally {
-        setIsReady(true);
+    try {
+      const saved = localStorage.getItem('cart');
+      if (saved) {
+        setCart(JSON.parse(saved));
       }
-    };
-
-    load();
+    } finally {
+      setIsReady(true);
+    }
   }, []);
 
   useEffect(() => {
@@ -40,22 +37,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [cart, isReady]);
 
-  const add = (id: string) =>
-    setCart((c) => ({ ...c, [id]: (c[id] || 0) + 1 }));
+  const add = (id: string) => {
+    setCart((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
+  };
 
-  const remove = (id: string) =>
-    setCart((c) => {
-      const count = (c[id] || 0) - 1;
+  const remove = (id: string) => {
+    setCart((prev) => {
+      const count = (prev[id] || 0) - 1;
       if (count <= 0) {
-        const copy = { ...c };
+        const copy = { ...prev };
         delete copy[id];
         return copy;
       }
-      return { ...c, [id]: count };
+      return { ...prev, [id]: count };
     });
+  };
+
+  const removeAll = (id: string) => {
+    setCart((prev) => {
+      const copy = { ...prev };
+      delete copy[id];
+      return copy;
+    });
+  };
 
   return (
-    <CartContext.Provider value={{ cart, add, remove, isReady }}>
+    <CartContext.Provider value={{ cart, add, remove, removeAll, isReady }}>
       {children}
     </CartContext.Provider>
   );
