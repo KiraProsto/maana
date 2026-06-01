@@ -17,23 +17,31 @@ export default function CartItem({ item }: ICartItemProps) {
   const idStr = String(item.id);
 
   return (
-    <div className={styles.cartItem}>
+    <div
+      className={styles.cartItem}
+      role="group"
+      aria-label={`Товар ${item.name}`}>
       <Image
         src={item.mainImage}
-        alt={item.name}
+        alt={`Изображение товара ${item.name}`}
         width={100}
         height={100}
         className={styles.cartItemImg}
       />
 
       <div className={styles.cartItemCenter}>
-        <div className={styles.cartItemName}>{item.name}</div>
-        <div className={styles.cartItemPrice}>
+        <div className={styles.cartItemName} aria-label="Название товара">
+          {item.name}
+        </div>
+        <div className={styles.cartItemPrice} aria-label={`Стоимость`}>
           {item.price * item.count} руб
         </div>
       </div>
 
-      <div className={styles.cartItemCounter}>
+      <div
+        className={styles.cartItemCounter}
+        role="group"
+        aria-label="Счетчик количества">
         <button
           className={styles.counterBtn}
           onClick={() => remove(idStr)}
@@ -41,7 +49,12 @@ export default function CartItem({ item }: ICartItemProps) {
           −
         </button>
 
-        <div className={styles.counterValue}>{item.count}</div>
+        <div
+          className={styles.counterValue}
+          aria-live="polite"
+          aria-atomic="true">
+          {item.count}
+        </div>
 
         <button
           className={styles.counterBtn}
@@ -56,7 +69,8 @@ export default function CartItem({ item }: ICartItemProps) {
         onClick={() => {
           add(idStr);
           router.push('/checkout');
-        }}>
+        }}
+        aria-label={`Купить товар ${item.name} и перейти к оформлению`}>
         Купить
       </button>
 

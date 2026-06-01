@@ -18,20 +18,30 @@ export default function CartSummary({ items }: ICartSummaryProps) {
   );
 
   return (
-    <div className={styles.cartSummary}>
+    <div
+      className={styles.cartSummary}
+      role="region"
+      aria-label="Сводка заказа">
       <h3 className={styles.cartSummaryTitle}>Ваш заказ</h3>
 
       <p className={styles.cartSummaryLine}>
-        Товаров: <span>{totalCount} шт</span>
+        Товаров:{' '}
+        <span aria-live="polite" aria-atomic="true">
+          {totalCount} шт
+        </span>
       </p>
 
       <p className={styles.cartSummaryLine}>
-        Итого: <span>{totalPrice} руб</span>
+        Итого:{' '}
+        <span aria-live="polite" aria-atomic="true">
+          {totalPrice} руб
+        </span>
       </p>
 
       <button
         className={styles.cartBtn}
-        onClick={() => router.push('/checkout')}>
+        onClick={() => router.push('/checkout')}
+        aria-label="Перейти к оформлению заказа">
         Оформить заказ
       </button>
     </div>

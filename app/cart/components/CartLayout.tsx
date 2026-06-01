@@ -26,12 +26,24 @@ export default function CartLayout() {
     .filter((item): item is ICartProduct => item !== null);
 
   return (
-    <div className={styles.cartLayout}>
-      <div className={styles.cartItems}>
+    <div
+      className={styles.cartLayout}
+      role="region"
+      aria-label="Корзина товаров">
+      <div
+        className={styles.cartItems}
+        role="list"
+        aria-label="Список товаров в корзине">
         {items.length === 0 ? (
-          <p>Корзина пуста</p>
+          <p role="status" aria-live="polite">
+            Корзина пуста
+          </p>
         ) : (
-          items.map((item) => <CartItem key={item.id} item={item} />)
+          items.map((item) => (
+            <div role="listitem" key={item.id}>
+              <CartItem item={item} />
+            </div>
+          ))
         )}
       </div>
 
