@@ -1,0 +1,13 @@
+.body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-main);
+  background: #fff;
+  color: #000;
+  -webkit-font-smoothing: antialiased;
+}
+
+.main {
+  flex: 1 0 auto;
+}
