@@ -13,6 +13,14 @@ export default function Header() {
   const { cart } = useCart();
   const cartCount = Object.values(cart).reduce((sum, n) => sum + n, 0);
 
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && search.trim()) {
+      window.location.href = `/catalog?search=${encodeURIComponent(search)}`;
+    }
+  };
+
   return (
     <header className={styles.header}>
       {/* Бургер */}
@@ -66,6 +74,9 @@ export default function Header() {
           className={styles.search}
           placeholder="Поиск"
           aria-label="Поиск по сайту"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
         />
       </div>
 
@@ -117,7 +128,14 @@ export default function Header() {
         role="dialog"
         aria-modal="true"
         aria-label="Мобильный поиск">
-        <input type="search" placeholder="Поиск" aria-label="Поиск по сайту" />
+        <input
+          type="search"
+          placeholder="Поиск"
+          aria-label="Поиск по сайту"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
+        />
         <button
           className={styles.mobileSearchClose}
           aria-label="Закрыть поиск"
