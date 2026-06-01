@@ -1,14 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import Image from 'next/image';
 import styles from './ProductsSection.module.css';
 import { useCart } from '@/app/context/CartContext';
+import ProductModal from './Modal/ProductModal';
 
 interface IProduct {
   id: number;
   name: string;
   price: string;
-  image: string;
+  mainImage: string;
+  description?: string;
+  advantages?: string;
+  characteristics?: string;
+  gallery?: string[];
 }
 
 interface IProps {
@@ -19,6 +25,14 @@ interface IProps {
 
 export default function ProductsSection({ id, title, products }: IProps) {
   const { cart, add, remove, isReady } = useCart();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalProduct, setModalProduct] = useState<IProduct | null>(null);
+
+  const openModal = (item: IProduct) => {
+    setModalProduct(item);
+    setModalOpen(true);
+  };
 
   return (
     <section id={id} className={styles.interior}>
@@ -33,20 +47,28 @@ export default function ProductsSection({ id, title, products }: IProps) {
           const count = cart[idStr] || 0;
 
           return (
-            <div key={item.id} className={styles.productCard}>
+            <div
+              key={item.id}
+              className={styles.productCard}
+              onClick={(e) => {
+                if (
+                  e.target instanceof HTMLElement &&
+                  e.target.closest(`.${styles.productCardBtn}`)
+                )
+                  return;
+                openModal(item);
+              }}>
               <Image
-                src={item.image}
+                src={item.mainImage}
                 alt={item.name}
                 width={260}
                 height={195}
                 className={styles.productCardImg}
                 loading="eager"
               />
-
               <div className={styles.productCardName}>{item.name}</div>
               <div className={styles.productCardPrice}>{item.price}</div>
 
-              {/* ⭐ Пока корзина не загружена — ВСЕГДА кнопка */}
               {!isReady ? (
                 <div className={styles.productCardBtn}>В корзину</div>
               ) : count === 0 ? (
@@ -62,9 +84,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
                     onClick={() => remove(idStr)}>
                     −
                   </div>
-
                   <div className={styles.counterValue}>{count}</div>
-
                   <div className={styles.counterBtn} onClick={() => add(idStr)}>
                     +
                   </div>
@@ -74,6 +94,30 @@ export default function ProductsSection({ id, title, products }: IProps) {
           );
         })}
       </div>
+
+      <ProductModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        product={
+          modalProduct
+            ? {
+                id: modalProduct.id,
+                name: modalProduct.name,
+                description: modalProduct.description || '',
+                advantages: modalProduct.advantages || '',
+                characteristics: modalProduct.characteristics || '',
+                // mainImage первым, затем остальная галерея
+                gallery: [
+                  { type: 'image' as const, src: modalProduct.mainImage },
+                  ...(modalProduct.gallery || []).map((src) => ({
+                    type: 'image' as const,
+                    src,
+                  })),
+                ],
+              }
+            : null
+        }
+      />
     </section>
   );
 }

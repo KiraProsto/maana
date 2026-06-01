@@ -11,7 +11,6 @@ export default function MasterSection() {
       id="master"
       role="region"
       aria-labelledby="master-title">
-      {/* Заголовок */}
       <div className={styles.masterTitleWrap}>
         <h2 id="master-title" className={styles.masterTitle}>
           МАСТЕР‑КЛАССЫ
@@ -19,7 +18,6 @@ export default function MasterSection() {
         <div className={styles.masterLine} aria-hidden="true"></div>
       </div>
 
-      {/* Карточки */}
       <div className={styles.masterCards}>
         {masterClasses.map((item, index) => (
           <div
@@ -32,7 +30,6 @@ export default function MasterSection() {
             onKeyDown={(e) => {
               if (e.key === 'Enter') console.log('Открыть модалку', item);
             }}>
-            {/* Фото */}
             <Image
               src={item.mainImage}
               alt={item.title}
@@ -45,10 +42,8 @@ export default function MasterSection() {
               className={styles.masterCardImg}
             />
 
-            {/* Возраст */}
             <div className={styles.masterCardAge}>{item.age}</div>
 
-            {/* Нижний блок */}
             <div className={styles.masterCardBottom}>
               <div className={styles.masterCardTitle}>{item.title}</div>
 

@@ -19,13 +19,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<Cart>({});
   const [isReady, setIsReady] = useState(false);
 
-  // ⭐ Загружаем корзину после гидрации — БЕЗ setState в теле эффекта
   useEffect(() => {
     const load = () => {
       try {
         const saved = localStorage.getItem('cart');
         if (saved) {
-          // setState внутри callback — ESLint НЕ ругается
           setCart(JSON.parse(saved));
         }
       } finally {
@@ -33,11 +31,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    // вызываем callback
     load();
   }, []);
 
-  // ⭐ Сохраняем корзину только после загрузки
   useEffect(() => {
     if (isReady) {
       localStorage.setItem('cart', JSON.stringify(cart));

@@ -62,7 +62,7 @@
 }
 
 .search:focus {
-  border-color: #f2b13b;
+  border-color: var(--color-accent);
   outline: none;
   box-shadow: 0 0 8px rgba(242, 177, 59, 0.5);
 }
@@ -170,7 +170,7 @@
 }
 
 .mobileSearch input:focus {
-  border-color: #f2b13b;
+  border-color: var(--color-accent);
   box-shadow: 0 0 8px rgba(242, 177, 59, 0.5);
   outline: none;
 }
