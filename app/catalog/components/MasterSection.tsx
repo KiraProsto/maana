@@ -32,11 +32,10 @@ export default function MasterSection() {
 
       <div className={styles.masterCards}>
         {masterClasses.map((item, index) => (
-          <div
+          <button
             key={index}
             className={styles.masterCard}
             role="button"
-            tabIndex={0}
             aria-label={`Открыть мастер-класс: ${item.title}`}
             onClick={() => openModal(item)}
             onKeyDown={(e) => {
@@ -62,11 +61,12 @@ export default function MasterSection() {
                   width={20}
                   height={20}
                   className="time-icon"
+                  aria-hidden="true"
                 />
                 <span>{item.duration}</span>
               </div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 

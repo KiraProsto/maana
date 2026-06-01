@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import styles from './MasterModal.module.css';
 
@@ -31,6 +31,7 @@ export default function MasterModal({
   item,
 }: MasterModalProps) {
   const [index, setIndex] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -47,6 +48,10 @@ export default function MasterModal({
     return () => {
       document.body.style.overflow = '';
     };
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen) modalRef.current?.focus();
   }, [isOpen]);
 
   if (!isOpen || !item) return null;
@@ -71,12 +76,21 @@ export default function MasterModal({
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.close} onClick={onClose}>
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="master-modal-title"
+        tabIndex={-1}
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}>
+        <button
+          className={styles.close}
+          onClick={onClose}
+          aria-label="Закрыть модальное окно">
           ×
-        </div>
+        </button>
 
-        {/* ЛЕВАЯ ЧАСТЬ */}
         <div className={styles.left}>
           <div className={styles.imageWrap}>
             {current.type === 'image' ? (
@@ -95,17 +109,24 @@ export default function MasterModal({
                 playsInline
                 autoPlay
                 loop
+                aria-label={`Видео мастер-класса ${item.title}`}
               />
             )}
 
             {hasMultiple && (
               <>
-                <div className={styles.arrowLeft} onClick={prev}>
+                <button
+                  className={styles.arrowLeft}
+                  onClick={prev}
+                  aria-label="Предыдущее изображение">
                   ‹
-                </div>
-                <div className={styles.arrowRight} onClick={next}>
+                </button>
+                <button
+                  className={styles.arrowRight}
+                  onClick={next}
+                  aria-label="Следующее изображение">
                   ›
-                </div>
+                </button>
               </>
             )}
           </div>
@@ -117,15 +138,17 @@ export default function MasterModal({
                   key={i}
                   className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
                   onClick={() => setIndex(i)}
+                  aria-label={`Перейти к изображению ${i + 1}`}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* ПРАВАЯ ЧАСТЬ */}
         <div className={styles.right}>
-          <h3 className={styles.title}>{item.title}</h3>
+          <h3 id="master-modal-title" className={styles.title}>
+            {item.title}
+          </h3>
 
           {item.description && (
             <p className={styles.desc}>{item.description}</p>
@@ -151,10 +174,11 @@ export default function MasterModal({
             <a
               href="https://max.ru/u/f9LHodD0cOIr-W0FBa3_vxtJcRG8Q_nSDP5cOTUofBVzeVgrKyBM-jZyqtM"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+              aria-label="Написать в MAX">
               <Image
                 src="/icons/message/max.svg"
-                alt="MAX"
+                alt=""
                 width={38}
                 height={38}
               />
@@ -162,10 +186,11 @@ export default function MasterModal({
             <a
               href="https://t.me/HyggeCandleS"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+              aria-label="Написать в Telegram">
               <Image
                 src="/icons/message/tg.svg"
-                alt="Telegram"
+                alt=""
                 width={38}
                 height={38}
               />
@@ -173,10 +198,11 @@ export default function MasterModal({
             <a
               href="https://vk.ru/hugge_aura"
               target="_blank"
-              rel="noopener noreferrer">
+              rel="noopener noreferrer"
+              aria-label="Написать в VK">
               <Image
                 src="/icons/message/vk.svg"
-                alt="VK"
+                alt=""
                 width={38}
                 height={38}
               />

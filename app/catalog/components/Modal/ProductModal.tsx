@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import styles from './ProductModal.module.css';
 import { useCart } from '@/app/context/CartContext';
@@ -30,6 +30,7 @@ export default function ProductModal({
 }: ProductModalProps) {
   const { cart, add, remove, isReady } = useCart();
   const [index, setIndex] = useState(0);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -48,6 +49,10 @@ export default function ProductModal({
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (isOpen) modalRef.current?.focus();
+  }, [isOpen]);
+
   if (!isOpen || !product) return null;
 
   const idStr = String(product.id);
@@ -61,12 +66,21 @@ export default function ProductModal({
 
   return (
     <div className={styles.overlay} onClick={onClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.close} onClick={onClose}>
+      <div
+        className={styles.modal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="product-modal-title"
+        tabIndex={-1}
+        ref={modalRef}
+        onClick={(e) => e.stopPropagation()}>
+        <button
+          className={styles.close}
+          onClick={onClose}
+          aria-label="Закрыть модальное окно">
           ×
-        </div>
+        </button>
 
-        {/* ЛЕВАЯ ЧАСТЬ */}
         <div className={styles.left}>
           <div className={styles.imageWrap}>
             {current.type === 'image' ? (
@@ -85,17 +99,25 @@ export default function ProductModal({
                 playsInline
                 autoPlay
                 loop
+                aria-label={`Видео товара ${product.name}`}
               />
             )}
 
             {hasMultiple && (
               <>
-                <div className={styles.arrowLeft} onClick={prev}>
+                <button
+                  className={styles.arrowLeft}
+                  onClick={prev}
+                  aria-label="Предыдущее изображение">
                   ‹
-                </div>
-                <div className={styles.arrowRight} onClick={next}>
+                </button>
+
+                <button
+                  className={styles.arrowRight}
+                  onClick={next}
+                  aria-label="Следующее изображение">
                   ›
-                </div>
+                </button>
               </>
             )}
           </div>
@@ -107,15 +129,17 @@ export default function ProductModal({
                   key={i}
                   className={`${styles.dot} ${i === index ? styles.dotActive : ''}`}
                   onClick={() => setIndex(i)}
+                  aria-label={`Перейти к изображению ${i + 1}`}
                 />
               ))}
             </div>
           )}
         </div>
 
-        {/* ПРАВАЯ ЧАСТЬ */}
         <div className={styles.right}>
-          <h3 className={styles.title}>{product.name}</h3>
+          <h3 id="product-modal-title" className={styles.title}>
+            {product.name}
+          </h3>
 
           {product.description && (
             <p className={styles.desc}>{product.description}</p>
@@ -140,20 +164,33 @@ export default function ProductModal({
           )}
 
           {!isReady ? (
-            <div className={styles.btn}>В корзину</div>
-          ) : count === 0 ? (
-            <div className={styles.btn} onClick={() => add(idStr)}>
+            <button className={styles.btn} type="button">
               В корзину
-            </div>
+            </button>
+          ) : count === 0 ? (
+            <button
+              className={styles.btn}
+              onClick={() => add(idStr)}
+              type="button">
+              В корзину
+            </button>
           ) : (
             <div className={`${styles.btn} ${styles.counter}`}>
-              <div className={styles.counterBtn} onClick={() => remove(idStr)}>
+              <button
+                className={styles.counterBtn}
+                onClick={() => remove(idStr)}
+                aria-label="Уменьшить количество">
                 −
-              </div>
+              </button>
+
               <div className={styles.counterValue}>{count}</div>
-              <div className={styles.counterBtn} onClick={() => add(idStr)}>
+
+              <button
+                className={styles.counterBtn}
+                onClick={() => add(idStr)}
+                aria-label="Увеличить количество">
                 +
-              </div>
+              </button>
             </div>
           )}
         </div>

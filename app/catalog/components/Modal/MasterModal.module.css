@@ -26,6 +26,8 @@
 
 /* ---------------------- КРЕСТИК ---------------------- */
 .close {
+  border: none;
+  background: none;
   position: absolute;
   top: 20px;
   right: 25px;
@@ -65,6 +67,8 @@
 /* ---------------------- СТРЕЛКИ ---------------------- */
 .arrowLeft,
 .arrowRight {
+  border: none;
+  background: none;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);

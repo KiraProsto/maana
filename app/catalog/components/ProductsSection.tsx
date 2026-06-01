@@ -35,10 +35,16 @@ export default function ProductsSection({ id, title, products }: IProps) {
   };
 
   return (
-    <section id={id} className={styles.interior}>
+    <section
+      id={id}
+      className={styles.interior}
+      role="region"
+      aria-labelledby={`${id}-title`}>
       <div className={styles.interiorTitleWrap}>
-        <h2 className={styles.interiorTitle}>{title}</h2>
-        <div className={styles.interiorLine}></div>
+        <h2 id={`${id}-title`} className={styles.interiorTitle}>
+          {title}
+        </h2>
+        <div className={styles.interiorLine} aria-hidden="true"></div>
       </div>
 
       <div className={styles.interiorGrid}>
@@ -47,9 +53,10 @@ export default function ProductsSection({ id, title, products }: IProps) {
           const count = cart[idStr] || 0;
 
           return (
-            <div
+            <button
               key={item.id}
               className={styles.productCard}
+              aria-label={`Открыть товар: ${item.name}`}
               onClick={(e) => {
                 if (
                   e.target instanceof HTMLElement &&
@@ -74,23 +81,32 @@ export default function ProductsSection({ id, title, products }: IProps) {
               ) : count === 0 ? (
                 <div
                   className={styles.productCardBtn}
-                  onClick={() => add(idStr)}>
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    add(idStr);
+                  }}>
                   В корзину
                 </div>
               ) : (
-                <div className={`${styles.productCardBtn} ${styles.counter}`}>
+                <div
+                  className={`${styles.productCardBtn} ${styles.counter}`}
+                  onClick={(e) => e.stopPropagation()}>
                   <div
                     className={styles.counterBtn}
-                    onClick={() => remove(idStr)}>
+                    onClick={() => remove(idStr)}
+                    aria-label="Уменьшить количество">
                     −
                   </div>
                   <div className={styles.counterValue}>{count}</div>
-                  <div className={styles.counterBtn} onClick={() => add(idStr)}>
+                  <div
+                    className={styles.counterBtn}
+                    onClick={() => add(idStr)}
+                    aria-label="Увеличить количество">
                     +
                   </div>
                 </div>
               )}
-            </div>
+            </button>
           );
         })}
       </div>
@@ -106,7 +122,6 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 description: modalProduct.description || '',
                 advantages: modalProduct.advantages || '',
                 characteristics: modalProduct.characteristics || '',
-                // mainImage первым, затем остальная галерея
                 gallery: [
                   { type: 'image' as const, src: modalProduct.mainImage },
                   ...(modalProduct.gallery || []).map((src) => ({
