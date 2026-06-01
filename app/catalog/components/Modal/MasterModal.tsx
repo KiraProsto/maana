@@ -85,6 +85,7 @@ export default function MasterModal({
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}>
         <button
+          type="button"
           className={styles.close}
           onClick={onClose}
           aria-label="Закрыть модальное окно">
@@ -116,12 +117,14 @@ export default function MasterModal({
             {hasMultiple && (
               <>
                 <button
+                  type="button"
                   className={styles.arrowLeft}
                   onClick={prev}
                   aria-label="Предыдущее изображение">
                   ‹
                 </button>
                 <button
+                  type="button"
                   className={styles.arrowRight}
                   onClick={next}
                   aria-label="Следующее изображение">

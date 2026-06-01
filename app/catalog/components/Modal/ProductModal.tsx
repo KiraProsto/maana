@@ -75,6 +75,7 @@ export default function ProductModal({
         ref={modalRef}
         onClick={(e) => e.stopPropagation()}>
         <button
+          type="button"
           className={styles.close}
           onClick={onClose}
           aria-label="Закрыть модальное окно">
@@ -106,6 +107,7 @@ export default function ProductModal({
             {hasMultiple && (
               <>
                 <button
+                  type="button"
                   className={styles.arrowLeft}
                   onClick={prev}
                   aria-label="Предыдущее изображение">
@@ -113,6 +115,7 @@ export default function ProductModal({
                 </button>
 
                 <button
+                  type="button"
                   className={styles.arrowRight}
                   onClick={next}
                   aria-label="Следующее изображение">
@@ -177,6 +180,7 @@ export default function ProductModal({
           ) : (
             <div className={`${styles.btn} ${styles.counter}`}>
               <button
+                type="button"
                 className={styles.counterBtn}
                 onClick={() => remove(idStr)}
                 aria-label="Уменьшить количество">
@@ -186,6 +190,7 @@ export default function ProductModal({
               <div className={styles.counterValue}>{count}</div>
 
               <button
+                type="button"
                 className={styles.counterBtn}
                 onClick={() => add(idStr)}
                 aria-label="Увеличить количество">

@@ -4,15 +4,20 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Header.module.css';
+import { useCart } from '../context/CartContext';
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
+  const { cart } = useCart();
+  const cartCount = Object.values(cart).reduce((sum, n) => sum + n, 0);
+
   return (
     <header className={styles.header}>
       {/* Бургер */}
       <button
+        type="button"
         aria-label="Открыть меню"
         aria-expanded={menuOpen}
         aria-controls="main-navigation"
@@ -67,6 +72,7 @@ export default function Header() {
       {/* Иконки справа — мобайл */}
       <div className={styles.headerIcons}>
         <button
+          type="button"
           aria-label="Открыть поиск"
           onClick={() => setMobileSearchOpen(true)}
           className={styles.iconButton}>
@@ -80,7 +86,10 @@ export default function Header() {
           />
         </button>
 
-        <Link href="/cart" aria-label="Корзина">
+        <Link
+          href="/cart"
+          aria-label="Корзина"
+          className={styles.cartIconWrapper}>
           <Image
             src="/icons/bag.svg"
             alt=""
@@ -89,6 +98,14 @@ export default function Header() {
             height={25}
             className={styles.bagIcon}
           />
+
+          {cartCount > 0 && (
+            <span
+              className={styles.cartBadge}
+              aria-label={`В корзине ${cartCount} товаров`}>
+              {cartCount}
+            </span>
+          )}
         </Link>
       </div>
 
@@ -119,7 +136,10 @@ export default function Header() {
         <Link href="/catalog">Каталог</Link>
         <Link href="/#delivery">О доставке</Link>
 
-        <Link href="/cart" className={styles.navCart} aria-label="Корзина">
+        <Link
+          href="/cart"
+          className={`${styles.navCart} ${styles.cartIconWrapper}`}
+          aria-label="Корзина">
           <Image
             src="/icons/bag.svg"
             alt=""
@@ -128,6 +148,14 @@ export default function Header() {
             height={25}
             className={styles.bagIcon}
           />
+
+          {cartCount > 0 && (
+            <span
+              className={styles.cartBadge}
+              aria-label={`В корзине ${cartCount} товаров`}>
+              {cartCount}
+            </span>
+          )}
         </Link>
       </nav>
     </header>
