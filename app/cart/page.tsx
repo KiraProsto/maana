@@ -1,5 +1,10 @@
+import { Metadata } from 'next';
 import styles from './CartPage.module.css';
 import CartLayout from './components/CartLayout';
+
+export const metadata: Metadata = {
+  title: 'МААНА | Корзина',
+};
 
 export default function CartPage() {
   return (

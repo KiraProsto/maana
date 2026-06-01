@@ -67,7 +67,7 @@ export default function CartItem({ item }: ICartItemProps) {
       <button
         className={styles.cartItemBuy}
         onClick={() => {
-          router.push('/checkout');
+          router.push(`/checkout?product=${idStr}`);
         }}
         aria-label={`Купить товар ${item.name} и перейти к оформлению`}>
         Купить
