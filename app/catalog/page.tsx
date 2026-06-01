@@ -6,6 +6,7 @@ import ProductsSection from './components/ProductsSection';
 import { products } from '@/app/data/products';
 import { holders } from '@/app/data/holders';
 import { sachets } from '@/app/data/sachets';
+import ToTopButton from './components/ToTopButton';
 
 export const metadata: Metadata = {
   title: 'МААНА | Каталог',
@@ -30,6 +31,8 @@ export default function HomePage() {
       />
 
       <ProductsSection id="sachets" title="АРОМАСАШЕ" products={sachets} />
+
+      <ToTopButton />
     </>
   );
 }
