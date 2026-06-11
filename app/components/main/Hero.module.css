@@ -118,12 +118,12 @@
 }
 
 .heroBtn:hover {
-  border-color: #f2b13b;
-  color: #f2b13b;
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 }
 
 .heroBtn:active {
-  background: #f2b13b;
+  background: var(--color-accent);
   color: #fff;
 }
 

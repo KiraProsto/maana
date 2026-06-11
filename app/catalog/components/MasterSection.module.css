@@ -1,0 +1,232 @@
+.master {
+  margin-top: 150px;
+  color: #000;
+}
+
+.masterTitleWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.masterLine {
+  width: 100%;
+  height: 1px;
+  background: #000;
+}
+
+.masterTitle {
+  font-size: 56px;
+  font-weight: 200;
+  letter-spacing: 1px;
+}
+
+.masterCards {
+  margin: 50px 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: center;
+}
+
+.masterCard {
+  position: relative;
+  width: 310px;
+  height: 430px;
+  border: none;
+  background: none;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    transform 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.masterCard:hover {
+  transform: scale(1.03);
+  box-shadow: 0 15px 35px rgba(242, 177, 59, 0.35); /* var(--color-accent) */
+}
+
+.masterCard img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.masterCard:hover img {
+  transform: scale(1.08);
+}
+
+.masterCardAge {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: #fff;
+  color: #000;
+  padding: 13px 8px;
+  border-radius: 100%;
+  font-family: var(--font-main);
+}
+
+.masterCardBottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 15px 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.5) 70%, transparent);
+  color: #fff;
+}
+
+.masterCardTitle {
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-family: var(--font-main);
+  font-size: 20px;
+  text-align: left;
+}
+
+.masterCardTime {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+}
+
+.masterCardTime img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 1024px) {
+  .master {
+    margin-top: 110px;
+  }
+
+  .masterTitle {
+    font-size: 44px;
+  }
+
+  .masterCards {
+    gap: 22px;
+    margin: 35px auto;
+    max-width: 580px;
+  }
+
+  .masterCard {
+    width: 270px;
+    height: 360px;
+  }
+
+  .masterCardAge {
+    padding: 11px 7px;
+    font-size: 14px;
+  }
+
+  .masterCardBottom {
+    padding: 14px 18px;
+  }
+
+  .masterCardTitle {
+    font-size: 18px;
+  }
+
+  .masterCardTime {
+    font-size: 15px;
+  }
+
+  .masterCardTime img {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .master {
+    margin-top: 80px;
+  }
+
+  .masterTitle {
+    font-size: 32px;
+  }
+
+  .masterCards {
+    gap: 16px;
+    margin: 25px auto;
+    max-width: 460px;
+  }
+
+  .masterCard {
+    width: 215px;
+    height: 290px;
+  }
+
+  .masterCardAge {
+    padding: 10px 6px;
+    font-size: 13px;
+  }
+
+  .masterCardBottom {
+    padding: 12px 15px;
+  }
+
+  .masterCardTitle {
+    font-size: 16px;
+  }
+
+  .masterCardTime {
+    font-size: 14px;
+  }
+
+  .masterCardTime img {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+@media (max-width: 420px) {
+  .master {
+    margin-top: 60px;
+  }
+
+  .masterTitle {
+    font-size: 26px;
+  }
+
+  .masterCards {
+    gap: 12px;
+    margin: 20px auto;
+    max-width: 380px;
+  }
+
+  .masterCard {
+    width: 180px;
+    height: 250px;
+  }
+
+  .masterCardAge {
+    padding: 8px 5px;
+    font-size: 12px;
+  }
+
+  .masterCardBottom {
+    padding: 10px 12px;
+  }
+
+  .masterCardTitle {
+    font-size: 15px;
+  }
+
+  .masterCardTime {
+    font-size: 13px;
+  }
+
+  .masterCardTime img {
+    width: 14px;
+    height: 14px;
+  }
+}

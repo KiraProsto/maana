@@ -96,7 +96,7 @@
 }
 
 .hitsLink:hover {
-  color: #f2b13b;
+  color: var(--color-accent);
   transition: 0.3s ease;
 }
 
