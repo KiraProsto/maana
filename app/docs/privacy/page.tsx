@@ -226,7 +226,11 @@ export default function PrivacyPolicyPage() {
       <p>
         Подробные условия использования файлов cookies изложены в Политике
         использования файлов cookie, размещённой на странице{' '}
-        <a href="/docs/cookies">/docs/cookies</a>.
+        <a href=" https://maana.ru/docs/cookies">
+          {' '}
+          https://maana.ru/docs/cookies
+        </a>
+        .
       </p>
 
       <h2>10. Ответственность сторон</h2>
@@ -267,7 +271,12 @@ export default function PrivacyPolicyPage() {
 
       <p>
         Действующая редакция Политики конфиденциальности постоянно доступна на
-        странице <a href="/docs/privacy">/docs/privacy</a>.
+        странице{' '}
+        <a href=" https://maana.ru/docs/privacy">
+          {' '}
+          https://maana.ru/docs/privacy
+        </a>
+        .
       </p>
 
       <h2>13. Контактные данные Оператора</h2>
