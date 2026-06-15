@@ -146,10 +146,7 @@ export default function TermsPage() {
         <li>
           Соглашение действует бессрочно до появления новой версии, размещённой
           на странице{' '}
-          <a href="https://maana.ru/docs/terms">
-            {' '}
-            https://maana.ru/docs/terms{' '}
-          </a>
+          <a href="https://maana.ru/docs/terms"> https://maana.ru/docs/terms</a>
           .
         </li>
         <li>
