@@ -2,6 +2,7 @@ import styles from './checkout.module.css';
 import { Metadata } from 'next';
 import CheckoutForm from './components/CheckoutForm';
 import CheckoutSummary from './components/CheckoutSummary';
+import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'МААНА | Оформление',
@@ -19,7 +20,9 @@ export default function CheckoutPage() {
 
       <div className={styles.checkoutLayout}>
         <CheckoutForm />
-        <CheckoutSummary />
+        <Suspense fallback={<div>Загрузка...</div>}>
+          <CheckoutSummary />
+        </Suspense>
       </div>
     </main>
   );
