@@ -4,14 +4,18 @@
 
 @font-face {
   font-family: 'Florensa';
-  src: url('/fonts/FlorensaDemo-Regular.ttf') format('truetype');
+  src:
+    url('/fonts/FlorensaDemo-Regular.woff2') format('woff2'),
+    url('/fonts/FlorensaDemo-Regular.ttf') format('truetype');
   font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
   font-family: 'TenorSans';
-  src: url('/fonts/TenorSans-Regular.ttf') format('truetype');
+  src:
+    url('/fonts/TenorSans-Regular.woff2') format('woff2'),
+    url('/fonts/TenorSans-Regular.ttf') format('truetype');
   font-weight: 400;
   font-style: normal;
 }

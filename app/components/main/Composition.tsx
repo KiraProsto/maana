@@ -21,7 +21,7 @@ export default function Composition() {
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
-                src="/icons/oil.png"
+                src="/icons/oil.svg"
                 alt="Иконка ароматических масел"
                 width={40}
                 height={40}
@@ -41,7 +41,7 @@ export default function Composition() {
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
-                src="/icons/wax.png"
+                src="/icons/wax.svg"
                 alt="Иконка натурального воска"
                 width={40}
                 height={40}
@@ -66,7 +66,7 @@ export default function Composition() {
 
         <div className={styles.compositionCenter}>
           <Image
-            src="/main/candle.png"
+            src="/main/candle.webp"
             alt="Свеча МААНА"
             fill
             sizes="(max-width: 420px) 250px,
@@ -83,7 +83,7 @@ export default function Composition() {
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
-                src="/icons/wick.png"
+                src="/icons/wick.svg"
                 alt="Иконка фитилей"
                 width={40}
                 height={40}
@@ -109,7 +109,7 @@ export default function Composition() {
           <div className={styles.compositionItem}>
             <div className={styles.compositionItemHeader}>
               <Image
-                src="/icons/cup.png"
+                src="/icons/cup.svg"
                 alt="Иконка подсвечника"
                 width={40}
                 height={40}

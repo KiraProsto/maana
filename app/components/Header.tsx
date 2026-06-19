@@ -33,11 +33,11 @@ export default function Header() {
         className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
         style={{
           mask: menuOpen
-            ? "url('/icons/close.png') center/contain no-repeat"
-            : "url('/icons/burger.png') center/contain no-repeat",
+            ? "url('/icons/close.svg') center/contain no-repeat"
+            : "url('/icons/burger.svg') center/contain no-repeat",
           WebkitMask: menuOpen
-            ? "url('/icons/close.png') center/contain no-repeat"
-            : "url('/icons/burger.png') center/contain no-repeat",
+            ? "url('/icons/close.svg') center/contain no-repeat"
+            : "url('/icons/burger.svg') center/contain no-repeat",
         }}
       />
 

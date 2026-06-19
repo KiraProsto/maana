@@ -1,40 +1,20 @@
 export const masterClasses = [
   {
-    title: 'Индивидуальный мастер‑класс',
-    description:
-      'Текст для описания ьТекст для описания Текст для описания Текст для описания Текст для описания',
-    age: '16+',
-    duration: '120 мин',
-    price: '00000р',
-    mainImage: '/img/masterClasses/one.jpg',
-    images: ['/video/masterClasses/one.mp4'],
-  },
-  {
-    title: 'Мастер‑класс для пар',
-    description: '',
-    age: '16+',
-    duration: '120 мин',
-    price: '',
-    mainImage: '/img/masterClasses/two.png',
-    images: [
-      '/img/masterClasses/two_1.jpg',
-      '/img/masterClasses/two_2.jpg',
-      '/img/masterClasses/two_3.jpg',
-      '/img/masterClasses/two_4.jpg',
-    ],
-  },
-  {
     title: 'Мастер‑класс для пар (формат 18+)',
     description: '',
     age: '18+',
     duration: '120 мин',
     price: '',
-    mainImage: '/img/masterClasses/two1.jpg',
+    mainImage: '/img/masterClasses/two1.webp',
     images: [
-      '/img/masterClasses/two1_1.jpg',
-      '/img/masterClasses/two1_2.jpg',
-      '/img/masterClasses/two1_3.jpg',
-      '/img/masterClasses/two1_4.jpg',
+      '/img/masterClasses/two1_1.webp',
+      '/img/masterClasses/two1_2.webp',
+      '/img/masterClasses/two1_3.webp',
+      '/img/masterClasses/two1_4.webp',
+      '/img/masterClasses/two1_5.webp',
+      '/img/masterClasses/two1_6.webp',
+      '/img/masterClasses/two1_7.webp',
+      '/img/masterClasses/two1_8.webp',
     ],
   },
   {
@@ -43,7 +23,7 @@ export const masterClasses = [
     age: '14+',
     duration: '120 мин',
     price: '',
-    mainImage: '/img/masterClasses/komand.png',
+    mainImage: '/img/masterClasses/komand.webp',
     images: ['/video/masterClasses/comand.mp4'],
   },
 ];

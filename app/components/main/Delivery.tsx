@@ -23,7 +23,7 @@ export default function Delivery() {
           role="listitem"
           aria-label="Шаг 1: Выберите товар и оформите заказ">
           <Image
-            src="/icons/step1.png"
+            src="/icons/step1.svg"
             alt="Шаг 1"
             width={150}
             height={150}
@@ -48,7 +48,7 @@ export default function Delivery() {
           role="listitem"
           aria-label="Шаг 2: Выберите пункт выдачи и оплатите заказ">
           <Image
-            src="/icons/step2.png"
+            src="/icons/step2.svg"
             alt="Шаг 2"
             width={150}
             height={150}
@@ -73,7 +73,7 @@ export default function Delivery() {
           role="listitem"
           aria-label="Шаг 3: Заберите свой заказ">
           <Image
-            src="/icons/step3.png"
+            src="/icons/step3.svg"
             alt="Шаг 3"
             width={150}
             height={150}

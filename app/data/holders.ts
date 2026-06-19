@@ -3,11 +3,11 @@ export const holders = [
     id: 101,
     name: 'Ароматическая свеча «Мандрагора»',
     price: '2850 руб',
-    mainImage: '/img/products/mandragora/main.jpg',
+    mainImage: '/img/products/mandragora/main.webp',
     gallery: [
-      '/img/products/mandragora/1.jpg',
-      '/img/products/mandragora/2.jpg',
-      '/img/products/mandragora/3.jpg',
+      '/img/products/mandragora/1.webp',
+      '/img/products/mandragora/2.webp',
+      '/img/products/mandragora/3.webp',
     ],
     description: `Аромат «Счастливые мысли» 
     В набор входит: подарочная упаковка, спички, открытка. 
