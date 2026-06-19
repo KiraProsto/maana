@@ -31,6 +31,8 @@ export default function CatalogSection() {
             loop
             playsInline
             aria-hidden="true"
+            preload="none"
+            poster="/catalog/aroma.webp"
             tabIndex={-1}
             className={styles.catalogVideo}
           />
@@ -49,6 +51,8 @@ export default function CatalogSection() {
               loop
               playsInline
               aria-hidden="true"
+              preload="none"
+              poster="/catalog/master.webp"
               tabIndex={-1}
               className={styles.catalogVideo}
             />
@@ -66,6 +70,8 @@ export default function CatalogSection() {
               loop
               playsInline
               aria-hidden="true"
+              preload="none"
+              poster="/catalog/interior.webp"
               tabIndex={-1}
               className={styles.catalogVideo}
             />
@@ -82,6 +88,8 @@ export default function CatalogSection() {
               muted
               loop
               playsInline
+              preload="none"
+              poster="/catalog/sashe.webp"
               aria-hidden="true"
               tabIndex={-1}
               className={styles.catalogVideo}

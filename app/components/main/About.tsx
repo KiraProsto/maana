@@ -41,6 +41,8 @@ export default function About() {
             muted
             loop
             playsInline
+            preload="none"
+            poster="/main/about.webp"
             aria-hidden="true"
             tabIndex={-1}
           />
