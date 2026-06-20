@@ -73,7 +73,6 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 width={260}
                 height={195}
                 className={styles.productCardImg}
-                loading="eager"
               />
               <div className={styles.productCardName}>{item.name}</div>
               <div className={styles.productCardPrice}>{item.price}</div>

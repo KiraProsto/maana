@@ -6,6 +6,7 @@ import styles from './layout.module.css';
 import { CartProvider } from './context/CartContext';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://maana.ru'),
   title: 'МААНА | Свечи и мастер‑классы',
   description:
     'Интерьерные свечи, декор и очные мастер‑классы в уютной студии.',
@@ -36,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="ru" data-scroll-behavior="smooth">
       <body className={styles.body}>
         <CartProvider>
           <Header />
