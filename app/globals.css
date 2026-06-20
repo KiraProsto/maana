@@ -46,6 +46,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
 html {
@@ -61,6 +62,15 @@ body {
   font-size: 18px;
   padding-top: 120px;
   overflow-x: hidden;
+}
+
+button {
+  -webkit-appearance: none;
+  color: inherit;
+}
+
+a {
+  color: inherit;
 }
 
 @media (max-width: 1024px) {

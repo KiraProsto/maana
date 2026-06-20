@@ -46,7 +46,8 @@ export default function Header() {
         <Link
           href="/"
           className={styles.logoLink}
-          aria-label="Перейти на главную">
+          aria-label="Перейти на главную"
+          onClick={() => setMenuOpen(false)}>
           <Image
             src="/logo.svg"
             alt=""
@@ -150,9 +151,15 @@ export default function Header() {
         role="navigation"
         aria-label="Основная навигация"
         className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
-        <Link href="/">Главная</Link>
-        <Link href="/catalog">Каталог</Link>
-        <Link href="/#delivery">О доставке</Link>
+        <Link href="/" onClick={() => setMenuOpen(false)}>
+          Главная
+        </Link>
+        <Link href="/catalog" onClick={() => setMenuOpen(false)}>
+          Каталог
+        </Link>
+        <Link href="/#delivery" onClick={() => setMenuOpen(false)}>
+          О доставке
+        </Link>
 
         <Link
           href="/cart"
