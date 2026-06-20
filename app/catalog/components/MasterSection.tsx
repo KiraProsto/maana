@@ -4,18 +4,17 @@ import { useState } from 'react';
 import Image from 'next/image';
 import styles from './MasterSection.module.css';
 import { masterClasses } from '@/app/data/masterClasses';
-import MasterModal from './Modal/MasterModal';
+import dynamic from 'next/dynamic';
 
+const MasterModal = dynamic(() => import('./Modal/MasterModal'), {
+  ssr: false,
+});
 type MasterClass = (typeof masterClasses)[number];
 
 export default function MasterSection() {
-  const [modalOpen, setModalOpen] = useState(false);
   const [selected, setSelected] = useState<MasterClass | null>(null);
 
-  const openModal = (item: MasterClass) => {
-    setSelected(item);
-    setModalOpen(true);
-  };
+  const openModal = (item: MasterClass) => setSelected(item);
 
   return (
     <section
@@ -70,11 +69,9 @@ export default function MasterSection() {
         ))}
       </div>
 
-      <MasterModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        item={selected}
-      />
+      {selected && (
+        <MasterModal isOpen onClose={() => setSelected(null)} item={selected} />
+      )}
     </section>
   );
 }

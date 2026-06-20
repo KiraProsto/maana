@@ -34,12 +34,6 @@ export default function MasterModal({
   const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    Promise.resolve().then(() => setIndex(0));
-  }, [isOpen]);
-
-  useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
