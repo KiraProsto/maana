@@ -1,5 +1,3 @@
-'use client';
-
 import styles from './CatalogSection.module.css';
 
 export default function CatalogSection() {
