@@ -321,31 +321,31 @@
 
 @media (max-width: 420px) {
   .header {
-    padding: 8px 10px;
-    gap: 6px;
+    padding: 14px 16px;
+    gap: 10px;
   }
 
   .logoImg {
-    height: 26px;
-    width: 26px;
+    height: 34px;
+    width: 34px;
   }
 
   .logo {
-    font-size: 16px;
+    font-size: 20px;
   }
 
   .headerIcons {
-    gap: 8px;
+    gap: 12px;
   }
 
   .burger {
-    width: 20px;
-    height: 20px;
+    width: 22px;
+    height: 22px;
   }
 
   .searchIconSmall {
-    width: 20px;
-    height: 22px;
+    width: 26px;
+    height: 26px;
   }
 
   .bagIcon {
@@ -354,8 +354,8 @@
   }
 
   .mobileSearch input {
-    font-size: 13px;
-    padding: 7px 14px;
-    border-radius: 28px;
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 32px;
   }
 }

@@ -23,7 +23,7 @@ export default function CatalogSection() {
           className={`${styles.catalogItem} ${styles.catalogItemBig}`}
           aria-label="Перейти к разделу Ароматические свечи">
           <video
-            src="/video/catalog/aroma.mp4"
+            src="/video/catalog/aroma1.mp4"
             autoPlay
             muted
             loop
@@ -43,7 +43,7 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemSquare}`}
             aria-label="Перейти к разделу Мастер‑классы">
             <video
-              src="/video/catalog/master.mp4"
+              src="/video/catalog/master1.mp4"
               autoPlay
               muted
               loop
@@ -62,7 +62,7 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemSquare}`}
             aria-label="Перейти к разделу Интерьерные свечи">
             <video
-              src="/video/catalog/interior.mp4"
+              src="/video/catalog/interior1.mp4"
               autoPlay
               muted
               loop
@@ -81,7 +81,7 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemWide}`}
             aria-label="Перейти к разделу Аромасаше">
             <video
-              src="/video/catalog/sashe.mp4"
+              src="/video/catalog/sashe1.mp4"
               autoPlay
               muted
               loop
