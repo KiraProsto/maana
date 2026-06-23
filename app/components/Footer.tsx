@@ -18,7 +18,7 @@ export default function Footer() {
             />
             <div className={styles.footerLogoText}>MAAHA</div>
           </div>
-          <div className={styles.footerTagline}>натуральный уход</div>
+          <div className={styles.footerTagline}>с ароматом и смыслом</div>
         </div>
 
         {/* НАВИГАЦИЯ */}

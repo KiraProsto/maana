@@ -45,7 +45,7 @@
 .footerTagline {
   font-size: 12px;
   color: rgba(255, 255, 255, 0.35);
-  letter-spacing: 2.5px;
+  letter-spacing: -0.4px;
   text-transform: uppercase;
   padding-left: 2px;
 }

@@ -32,7 +32,7 @@ export default function Contacts() {
       </div>
 
       <p className={styles.contactsSubtitle}>
-        Остались вопросы? Нужна запись? Напиши!
+        Остались вопросы? Нужна запись? Напишите!
       </p>
 
       {/* Социальные ссылки */}
