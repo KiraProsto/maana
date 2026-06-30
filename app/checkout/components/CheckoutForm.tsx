@@ -1,7 +1,13 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import styles from '../checkout.module.css';
+import { useCart } from '@/app/context/CartContext';
+import { useSearchParams } from 'next/navigation';
+import { products } from '@/app/data/products';
+import { holders } from '@/app/data/holders';
+import { sachets } from '@/app/data/sachets';
 
 type FormData = {
   fio: string;
@@ -13,17 +19,83 @@ type FormData = {
   flat?: string;
   delivery: string;
   consent: boolean;
+  comment?: string;
 };
 
 export default function CheckoutForm() {
+  const router = useRouter();
+  const { cart } = useCart();
+  const params = useSearchParams();
+  const singleId = params.get('product');
+  const allProducts = [...products, ...holders, ...sachets];
+
+  let total = 0;
+  if (singleId) {
+    const product = allProducts.find((p) => p.id === Number(singleId));
+    if (product) {
+      total =
+        Number(String(product.price).replace(/\D/g, '')) *
+        (cart[singleId] || 1);
+    }
+  } else {
+    total = Object.entries(cart).reduce((sum, [id, count]) => {
+      const product = allProducts.find((p) => p.id === Number(id));
+      if (!product) return sum;
+      return sum + Number(String(product.price).replace(/\D/g, '')) * count;
+    }, 0);
+  }
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
 
-  const onSubmit = (data: FormData) => {
-    console.log(data);
+  const onSubmit = async (data: FormData) => {
+    try {
+      const res = await fetch('/api/create-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: total.toFixed(2),
+          description: `Заказ для ${data.fio}${data.comment ? `. Комментарий: ${data.comment}` : ''}`,
+          returnUrl: `${window.location.origin}/payment-success`,
+          metadata: {
+            fio: data.fio,
+            phone: data.phone,
+            email: data.email,
+            city: data.city,
+            street: data.street,
+            house: data.house,
+            flat: data.flat || '',
+            delivery: data.delivery,
+            comment: data.comment || '',
+            items: JSON.stringify(
+              (singleId
+                ? allProducts.filter((p) => p.id === Number(singleId))
+                : Object.keys(cart)
+                    .map((id) => allProducts.find((p) => p.id === Number(id)))
+                    .filter(Boolean)
+              ).map((p) => ({
+                name: p!.name,
+                count: cart[String(p!.id)] || 1,
+                price: Number(String(p!.price).replace(/\D/g, '')),
+              })),
+            ),
+          },
+        }),
+      });
+
+      const result = await res.json();
+
+      if (result.confirmationUrl) {
+        router.push(result.confirmationUrl);
+      } else {
+        alert('Ошибка при создании платежа');
+      }
+    } catch {
+      alert('Что-то пошло не так');
+    }
   };
 
   return (
@@ -140,6 +212,10 @@ export default function CheckoutForm() {
           />
         </div>
       </div>
+
+      <textarea
+        className={styles.comment}
+        placeholder="Некоторые товары имеют варианты дизайна, если такой товар есть у вас в заказе, уточните: вариант А, вариант Б"></textarea>
 
       <div
         className={styles.deliveryRow}
