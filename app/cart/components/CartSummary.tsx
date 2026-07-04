@@ -17,6 +17,8 @@ export default function CartSummary({ items }: ICartSummaryProps) {
     0,
   );
 
+  const isEmpty = items.length === 0;
+
   return (
     <div
       className={styles.cartSummary}
@@ -39,8 +41,9 @@ export default function CartSummary({ items }: ICartSummaryProps) {
       </p>
 
       <button
-        className={styles.cartBtn}
+        className={`${styles.cartBtn} ${isEmpty ? styles.cartBtnDisabled : ''}`}
         onClick={() => router.push('/checkout')}
+        disabled={isEmpty}
         aria-label="Перейти к оформлению заказа">
         Оформить заказ
       </button>

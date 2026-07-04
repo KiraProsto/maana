@@ -29,7 +29,7 @@ export const sachets = [
   },
   {
     id: 203,
-    name: 'Аромасаше «Шёпот Будды» и «Аум Шанти» — 1 шт (темная)',
+    name: 'Аромасаше «Шёпот Будды» и «Аум Шанти» — 1 шт (нуар)',
     price: '1200 руб',
     mainImage: '/img/sachets/whisper_black/main.webp',
     gallery: [
@@ -46,7 +46,7 @@ export const sachets = [
   },
   {
     id: 204,
-    name: 'Аромасаше «Шёпот Будды» и «Аум Шанти» — 2 шт (темная)',
+    name: 'Аромасаше «Шёпот Будды» и «Аум Шанти» — 2 шт (нуар)',
     price: '2200 руб',
     mainImage: '/img/sachets/whisper_black/main.webp',
     gallery: [
