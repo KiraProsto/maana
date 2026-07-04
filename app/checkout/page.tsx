@@ -19,7 +19,9 @@ export default function CheckoutPage() {
       </h1>
 
       <div className={styles.checkoutLayout}>
-        <CheckoutForm />
+        <Suspense fallback={<div>Загрузка...</div>}>
+          <CheckoutForm />
+        </Suspense>
         <Suspense fallback={<div>Загрузка...</div>}>
           <CheckoutSummary />
         </Suspense>
