@@ -5,9 +5,32 @@ export async function POST(req: NextRequest) {
   const body = await req.json();
   const { amount, description, returnUrl, metadata } = body;
 
+  let items: { name: string; count: number; price: number }[] = [];
+  try {
+    items = JSON.parse(metadata?.items || '[]');
+  } catch {
+    items = [];
+  }
+
   const credentials = Buffer.from(
     `${process.env.YOKASSA_SHOP_ID}:${process.env.YOKASSA_SECRET_KEY}`,
   ).toString('base64');
+
+  const receipt = {
+    customer: {
+      email: metadata?.email || '',
+      phone: metadata?.phone || '',
+    },
+    items: items.map((item) => ({
+      description: item.name,
+      quantity: String(item.count),
+      amount: {
+        value: (item.price * item.count).toFixed(2),
+        currency: 'RUB',
+      },
+      vat_code: 1,
+    })),
+  };
 
   const response = await fetch('https://api.yookassa.ru/v3/payments', {
     method: 'POST',
@@ -28,6 +51,7 @@ export async function POST(req: NextRequest) {
       capture: true,
       description,
       metadata,
+      receipt,
     }),
   });
 
