@@ -215,7 +215,8 @@ export default function CheckoutForm() {
 
       <textarea
         className={styles.comment}
-        placeholder="Некоторые товары имеют варианты дизайна, если такой товар есть у вас в заказе, уточните: вариант А, вариант Б"></textarea>
+        placeholder="Некоторые товары имеют варианты дизайна, если такой товар есть у вас в заказе, уточните: вариант А, вариант Б"
+        {...register('comment')}></textarea>
 
       <div
         className={styles.deliveryRow}
