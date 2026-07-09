@@ -288,7 +288,12 @@ export default function CheckoutForm() {
             value="СДЭК"
             {...register('delivery', { required: 'Выберите способ доставки' })}
           />{' '}
-          СДЭК{cdekLoading ? ' (считаем…)' : deliveryDays ? ` (${deliveryDays})` : ''}
+          СДЭК
+          {cdekLoading
+            ? ' (считаем…)'
+            : deliveryDays
+              ? ` (${deliveryDays})`
+              : ''}
         </label>
         <label htmlFor="delivery-wb">
           <input

@@ -37,23 +37,24 @@ export async function POST(req: NextRequest) {
     const toCode = cityData[0].code;
     const fromCode = Number(process.env.CDEK_FROM_CITY_CODE || '44');
 
-    const listRes = await fetch('https://api.cdek.ru/v2/calculator/tarifflist', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+    const listRes = await fetch(
+      'https://api.cdek.ru/v2/calculator/tarifflist',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 1,
+          from_location: { code: fromCode },
+          to_location: { code: toCode },
+          packages: [{ weight, height: 20, length: 20, width: 20 }],
+        }),
       },
-      body: JSON.stringify({
-        type: 1,
-        from_location: { code: fromCode },
-        to_location: { code: toCode },
-        packages: [{ weight, height: 10, length: 20, width: 15 }],
-      }),
-    });
+    );
     const listData = await listRes.json();
 
-    // delivery_mode 4 = склад-склад (ПВЗ → ПВЗ)
-    // delivery_mode 3 = склад-дверь (запасной вариант)
     type TariffItem = {
       tariff_code: number;
       delivery_mode: number;
@@ -67,7 +68,11 @@ export async function POST(req: NextRequest) {
       .filter((t) => t.delivery_mode === 4 && t.delivery_sum > 0)
       .sort((a, b) => a.delivery_sum - b.delivery_sum);
 
-    const pick = pvz[0] ?? all.filter((t) => t.delivery_sum > 0).sort((a, b) => a.delivery_sum - b.delivery_sum)[0];
+    const pick =
+      pvz[0] ??
+      all
+        .filter((t) => t.delivery_sum > 0)
+        .sort((a, b) => a.delivery_sum - b.delivery_sum)[0];
 
     if (!pick) {
       return NextResponse.json(
