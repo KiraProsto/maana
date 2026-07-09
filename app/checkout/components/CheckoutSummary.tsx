@@ -7,9 +7,11 @@ import { sachets } from '@/app/data/sachets';
 import CheckoutItem, { ICheckoutItem } from './CheckoutItem';
 import styles from '../checkout.module.css';
 import { useSearchParams } from 'next/navigation';
+import { useDelivery } from '@/app/context/DeliveryContext';
 
 export default function CheckoutSummary() {
   const { cart } = useCart();
+  const { deliveryCost } = useDelivery();
   const params = useSearchParams();
 
   const singleId = params.get('product');
@@ -58,8 +60,7 @@ export default function CheckoutSummary() {
     0,
   );
 
-  const delivery = 0;
-  const total = sumProducts + delivery;
+  const total = sumProducts + deliveryCost;
 
   return (
     <section
@@ -81,7 +82,10 @@ export default function CheckoutSummary() {
           Цена за товары: <span>{sumProducts} руб</span>
         </p>
         <p>
-          Доставка: <span>{delivery} руб</span>
+          Доставка:{' '}
+          <span>
+            {deliveryCost > 0 ? `${deliveryCost} руб` : 'рассчитывается'}
+          </span>
         </p>
         <p className={styles.checkoutTotalFinal}>
           Итого: <span>{total} руб</span>

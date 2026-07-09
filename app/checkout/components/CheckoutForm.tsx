@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import styles from '../checkout.module.css';
 import { useCart } from '@/app/context/CartContext';
+import { useDelivery } from '@/app/context/DeliveryContext';
 import { useSearchParams } from 'next/navigation';
 import { products } from '@/app/data/products';
 import { holders } from '@/app/data/holders';
@@ -25,9 +27,13 @@ type FormData = {
 export default function CheckoutForm() {
   const router = useRouter();
   const { cart } = useCart();
+  const { deliveryCost, deliveryDays, setDelivery } = useDelivery();
   const params = useSearchParams();
   const singleId = params.get('product');
   const allProducts = [...products, ...holders, ...sachets];
+
+  const [cdekLoading, setCdekLoading] = useState(false);
+  const [cdekError, setCdekError] = useState<string | null>(null);
 
   let total = 0;
   if (singleId) {
@@ -48,16 +54,68 @@ export default function CheckoutForm() {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormData>();
 
+  const deliveryValue = watch('delivery');
+  const cityValue = watch('city');
+
+  useEffect(() => {
+    if (deliveryValue !== 'СДЭК') {
+      setDelivery(0, null);
+      setCdekError(null);
+      return;
+    }
+
+    if (!cityValue?.trim() || cityValue.trim().length < 2) {
+      setDelivery(0, null);
+      setCdekError(null);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setCdekLoading(true);
+      setCdekError(null);
+      try {
+        const totalItems = singleId
+          ? cart[singleId] || 1
+          : Object.values(cart).reduce((s, c) => s + c, 0);
+        const weight = Math.max(500, totalItems * 300);
+
+        const res = await fetch('/api/cdek', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ city: cityValue.trim(), weight }),
+        });
+        const data = await res.json();
+
+        if (data.error) {
+          setCdekError('Не удалось рассчитать доставку для этого города');
+          setDelivery(0, null);
+        } else {
+          setDelivery(data.cost, `${data.periodMin}–${data.periodMax} дн.`);
+        }
+      } catch {
+        setCdekError('Ошибка соединения при расчёте доставки');
+        setDelivery(0, null);
+      } finally {
+        setCdekLoading(false);
+      }
+    }, 700);
+
+    return () => clearTimeout(timer);
+  }, [deliveryValue, cityValue]);
+
   const onSubmit = async (data: FormData) => {
+    const grandTotal = total + deliveryCost;
+
     try {
       const res = await fetch('/api/create-payment', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: total.toFixed(2),
+          amount: grandTotal.toFixed(2),
           description: `Заказ для ${data.fio}${data.comment ? `. Комментарий: ${data.comment}` : ''}`,
           returnUrl: `${window.location.origin}/payment-success`,
           metadata: {
@@ -69,6 +127,7 @@ export default function CheckoutForm() {
             house: data.house,
             flat: data.flat || '',
             delivery: data.delivery,
+            deliveryCost: String(deliveryCost),
             comment: data.comment || '',
             items: JSON.stringify(
               (singleId
@@ -229,7 +288,7 @@ export default function CheckoutForm() {
             value="СДЭК"
             {...register('delivery', { required: 'Выберите способ доставки' })}
           />{' '}
-          СДЭК (от 2 дней)
+          СДЭК{cdekLoading ? ' (считаем…)' : deliveryDays ? ` (${deliveryDays})` : ''}
         </label>
         <label htmlFor="delivery-wb">
           <input
@@ -252,6 +311,13 @@ export default function CheckoutForm() {
       </div>
       {errors.delivery && (
         <span className={styles.errorMsg}>{errors.delivery.message}</span>
+      )}
+      <p className={styles.deliveryNote}>
+        *Доставляем только до пунктов выдачи
+      </p>
+
+      {deliveryValue === 'СДЭК' && !cdekLoading && cdekError && (
+        <span className={styles.errorMsg}>{cdekError}</span>
       )}
 
       <div className={styles.consentBlock}>
