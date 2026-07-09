@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(req: NextRequest) {
   const event = await req.json();
@@ -22,14 +24,6 @@ export async function POST(req: NextRequest) {
       )
       .join('');
 
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_APP_PASSWORD,
-      },
-    });
-
     const html = `
       <h2>Новый оплаченный заказ</h2>
       <p><b>Сумма:</b> ${payment.amount.value} ${payment.amount.currency}</p>
@@ -45,8 +39,8 @@ export async function POST(req: NextRequest) {
     `;
 
     try {
-      await transporter.sendMail({
-        from: process.env.GMAIL_USER,
+      await resend.emails.send({
+        from: 'Маана <orders@maana.ru>',
         to: 'juliya.ist0508@gmail.com',
         subject: `Новый заказ от ${meta.fio || 'клиента'}`,
         html,
