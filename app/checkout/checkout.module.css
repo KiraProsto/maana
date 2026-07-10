@@ -83,6 +83,12 @@
   font-weight: 200;
 }
 
+.deliveryNote {
+  font-size: 13px;
+  color: #888;
+  margin-top: -4px;
+}
+
 .consentBlock {
   display: flex;
   flex-direction: column;
@@ -303,6 +309,23 @@
   font-size: 12px;
   color: #e24b4a;
   margin-top: 4px;
+}
+
+.cdekInfo {
+  margin-top: 8px;
+}
+
+.cdekLoading {
+  display: block;
+  font-size: 13px;
+  color: #888;
+}
+
+.cdekResult {
+  display: block;
+  font-size: 13px;
+  color: #2a7a2a;
+  font-weight: 500;
 }
 
 /* MOBILE */

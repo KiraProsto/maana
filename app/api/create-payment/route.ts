@@ -16,20 +16,36 @@ export async function POST(req: NextRequest) {
     `${process.env.YOKASSA_SHOP_ID}:${process.env.YOKASSA_SECRET_KEY}`,
   ).toString('base64');
 
+  const deliveryCost = Number(metadata?.deliveryCost || '0');
+
+  const receiptItems = items.map((item) => ({
+    description: item.name,
+    quantity: String(item.count),
+    amount: {
+      value: (item.price * item.count).toFixed(2),
+      currency: 'RUB',
+    },
+    vat_code: 1,
+  }));
+
+  if (deliveryCost > 0) {
+    receiptItems.push({
+      description: 'Доставка СДЭК',
+      quantity: '1',
+      amount: {
+        value: deliveryCost.toFixed(2),
+        currency: 'RUB',
+      },
+      vat_code: 1,
+    });
+  }
+
   const receipt = {
     customer: {
       email: metadata?.email || '',
       phone: metadata?.phone || '',
     },
-    items: items.map((item) => ({
-      description: item.name,
-      quantity: String(item.count),
-      amount: {
-        value: (item.price * item.count).toFixed(2),
-        currency: 'RUB',
-      },
-      vat_code: 1,
-    })),
+    items: receiptItems,
   };
 
   const response = await fetch('https://api.yookassa.ru/v3/payments', {
