@@ -11,7 +11,7 @@ import { useDelivery } from '@/app/context/DeliveryContext';
 
 export default function CheckoutSummary() {
   const { cart } = useCart();
-  const { deliveryCost } = useDelivery();
+  const { deliveryCost, deliveryLoading } = useDelivery();
   const params = useSearchParams();
 
   const singleId = params.get('product');
@@ -84,7 +84,11 @@ export default function CheckoutSummary() {
         <p>
           Доставка:{' '}
           <span>
-            {deliveryCost > 0 ? `${deliveryCost} руб` : 'рассчитывается'}
+            {deliveryLoading
+              ? 'рассчитывается'
+              : deliveryCost > 0
+                ? `${deliveryCost} руб`
+                : 'рассчитывается'}
           </span>
         </p>
         <p className={styles.checkoutTotalFinal}>

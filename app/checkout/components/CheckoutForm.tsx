@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import Image from 'next/image';
 import styles from '../checkout.module.css';
 import { useCart } from '@/app/context/CartContext';
 import { useDelivery } from '@/app/context/DeliveryContext';
@@ -24,16 +25,16 @@ type FormData = {
 };
 
 function calcMarketplaceCost(weightGrams: number): number {
-  if (weightGrams <= 500) return 200;
-  if (weightGrams <= 1000) return 280;
-  if (weightGrams <= 2000) return 380;
-  return 500;
+  if (weightGrams <= 500) return 300;
+  if (weightGrams <= 1000) return 380;
+  if (weightGrams <= 2000) return 480;
+  return 600;
 }
 
 export default function CheckoutForm() {
   const router = useRouter();
   const { cart } = useCart();
-  const { deliveryCost, deliveryDays, setDelivery } = useDelivery();
+  const { deliveryCost, deliveryDays, setDelivery, setDeliveryLoading } = useDelivery();
   const params = useSearchParams();
   const singleId = params.get('product');
   const allProducts = [...products, ...holders, ...sachets];
@@ -74,10 +75,26 @@ export default function CheckoutForm() {
   const cityValue = watch('city');
 
   useEffect(() => {
-    if (deliveryValue === 'WB' || deliveryValue === 'OZON') {
-      setDelivery(marketplaceCost, 'от 2 дней');
+    if (deliveryValue === 'WB') {
+      setDeliveryLoading(true);
+      setDelivery(0, null);
       setCdekError(null);
-      return;
+      const t = setTimeout(() => {
+        setDelivery(marketplaceCost, 'от 2 дней');
+        setDeliveryLoading(false);
+      }, 600);
+      return () => clearTimeout(t);
+    }
+
+    if (deliveryValue === 'OZON') {
+      setDeliveryLoading(true);
+      setDelivery(0, null);
+      setCdekError(null);
+      const t = setTimeout(() => {
+        setDelivery(249, 'от 2 дней');
+        setDeliveryLoading(false);
+      }, 600);
+      return () => clearTimeout(t);
     }
 
     if (deliveryValue !== 'СДЭК') {
@@ -298,7 +315,7 @@ export default function CheckoutForm() {
           />{' '}
           WB (от 2 дней)
         </label>
-        <label htmlFor="delivery-ozon">
+        <label htmlFor="delivery-ozon" className={styles.deliveryLabelOzon}>
           <input
             id="delivery-ozon"
             type="radio"
@@ -306,6 +323,19 @@ export default function CheckoutForm() {
             {...register('delivery')}
           />{' '}
           OZON (от 2 дней)
+          <span className={styles.ozonTooltipWrapper}>
+            <Image
+              src="/icons/attention.svg"
+              alt="Важно"
+              width={16}
+              height={16}
+              className={styles.ozonAttentionIcon}
+            />
+            <span className={styles.ozonTooltip}>
+              Укажите номер телефона, привязанный к вашему аккаунту Ozon — без
+              этого вы не сможете забрать посылку
+            </span>
+          </span>
         </label>
       </div>
       {errors.delivery && (
