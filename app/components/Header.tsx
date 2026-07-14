@@ -13,6 +13,14 @@ export default function Header() {
   const { cart } = useCart();
   const cartCount = Object.values(cart).reduce((sum, n) => sum + n, 0);
 
+  const [search, setSearch] = useState('');
+
+  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && search.trim()) {
+      window.location.href = `/catalog?search=${encodeURIComponent(search)}`;
+    }
+  };
+
   return (
     <header className={styles.header}>
       {/* Бургер */}
@@ -25,11 +33,11 @@ export default function Header() {
         className={`${styles.burger} ${menuOpen ? styles.burgerOpen : ''}`}
         style={{
           mask: menuOpen
-            ? "url('/icons/close.png') center/contain no-repeat"
-            : "url('/icons/burger.png') center/contain no-repeat",
+            ? "url('/icons/close.svg') center/contain no-repeat"
+            : "url('/icons/burger.svg') center/contain no-repeat",
           WebkitMask: menuOpen
-            ? "url('/icons/close.png') center/contain no-repeat"
-            : "url('/icons/burger.png') center/contain no-repeat",
+            ? "url('/icons/close.svg') center/contain no-repeat"
+            : "url('/icons/burger.svg') center/contain no-repeat",
         }}
       />
 
@@ -38,7 +46,8 @@ export default function Header() {
         <Link
           href="/"
           className={styles.logoLink}
-          aria-label="Перейти на главную">
+          aria-label="Перейти на главную"
+          onClick={() => setMenuOpen(false)}>
           <Image
             src="/logo.svg"
             alt=""
@@ -66,6 +75,9 @@ export default function Header() {
           className={styles.search}
           placeholder="Поиск"
           aria-label="Поиск по сайту"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
         />
       </div>
 
@@ -117,7 +129,14 @@ export default function Header() {
         role="dialog"
         aria-modal="true"
         aria-label="Мобильный поиск">
-        <input type="search" placeholder="Поиск" aria-label="Поиск по сайту" />
+        <input
+          type="search"
+          placeholder="Поиск"
+          aria-label="Поиск по сайту"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onKeyDown={handleSearch}
+        />
         <button
           className={styles.mobileSearchClose}
           aria-label="Закрыть поиск"
@@ -132,9 +151,15 @@ export default function Header() {
         role="navigation"
         aria-label="Основная навигация"
         className={`${styles.nav} ${menuOpen ? styles.navOpen : ''}`}>
-        <Link href="/">Главная</Link>
-        <Link href="/catalog">Каталог</Link>
-        <Link href="/#delivery">О доставке</Link>
+        <Link href="/" onClick={() => setMenuOpen(false)}>
+          Главная
+        </Link>
+        <Link href="/catalog" onClick={() => setMenuOpen(false)}>
+          Каталог
+        </Link>
+        <Link href="/#delivery" onClick={() => setMenuOpen(false)}>
+          О доставке
+        </Link>
 
         <Link
           href="/cart"

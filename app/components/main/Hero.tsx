@@ -1,5 +1,3 @@
-'use client';
-
 import styles from './Hero.module.css';
 import Link from 'next/link';
 
@@ -26,6 +24,8 @@ export default function Hero() {
         muted
         loop
         playsInline
+        preload="none"
+        poster="/main/main.webp"
         aria-hidden="true"
         tabIndex={-1}>
         <source src="/video/main/hero.mp4" type="video/mp4" />

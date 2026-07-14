@@ -4,7 +4,11 @@ import { useState } from 'react';
 import Image from 'next/image';
 import styles from './ProductsSection.module.css';
 import { useCart } from '@/app/context/CartContext';
-import ProductModal from './Modal/ProductModal';
+import dynamic from 'next/dynamic';
+
+const ProductModal = dynamic(() => import('./Modal/ProductModal'), {
+  ssr: false,
+});
 
 interface IProduct {
   id: number;
@@ -26,12 +30,10 @@ interface IProps {
 export default function ProductsSection({ id, title, products }: IProps) {
   const { cart, add, remove, isReady } = useCart();
 
-  const [modalOpen, setModalOpen] = useState(false);
   const [modalProduct, setModalProduct] = useState<IProduct | null>(null);
 
   const openModal = (item: IProduct) => {
     setModalProduct(item);
-    setModalOpen(true);
   };
 
   return (
@@ -71,7 +73,6 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 width={260}
                 height={195}
                 className={styles.productCardImg}
-                loading="eager"
               />
               <div className={styles.productCardName}>{item.name}</div>
               <div className={styles.productCardPrice}>{item.price}</div>
@@ -111,28 +112,26 @@ export default function ProductsSection({ id, title, products }: IProps) {
         })}
       </div>
 
-      <ProductModal
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-        product={
-          modalProduct
-            ? {
-                id: modalProduct.id,
-                name: modalProduct.name,
-                description: modalProduct.description || '',
-                advantages: modalProduct.advantages || '',
-                characteristics: modalProduct.characteristics || '',
-                gallery: [
-                  { type: 'image' as const, src: modalProduct.mainImage },
-                  ...(modalProduct.gallery || []).map((src) => ({
-                    type: 'image' as const,
-                    src,
-                  })),
-                ],
-              }
-            : null
-        }
-      />
+      {modalProduct && (
+        <ProductModal
+          isOpen
+          onClose={() => setModalProduct(null)}
+          product={{
+            id: modalProduct.id,
+            name: modalProduct.name,
+            description: modalProduct.description || '',
+            advantages: modalProduct.advantages || '',
+            characteristics: modalProduct.characteristics || '',
+            gallery: [
+              { type: 'image' as const, src: modalProduct.mainImage },
+              ...(modalProduct.gallery || []).map((src) => ({
+                type: 'image' as const,
+                src,
+              })),
+            ],
+          }}
+        />
+      )}
     </section>
   );
 }

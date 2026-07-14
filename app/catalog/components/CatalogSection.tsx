@@ -1,5 +1,3 @@
-'use client';
-
 import styles from './CatalogSection.module.css';
 
 export default function CatalogSection() {
@@ -25,12 +23,14 @@ export default function CatalogSection() {
           className={`${styles.catalogItem} ${styles.catalogItemBig}`}
           aria-label="Перейти к разделу Ароматические свечи">
           <video
-            src="/video/catalog/aroma.mp4"
+            src="/video/catalog/aroma1.mp4"
             autoPlay
             muted
             loop
             playsInline
             aria-hidden="true"
+            preload="none"
+            poster="/catalog/aroma.webp"
             tabIndex={-1}
             className={styles.catalogVideo}
           />
@@ -43,12 +43,14 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemSquare}`}
             aria-label="Перейти к разделу Мастер‑классы">
             <video
-              src="/video/catalog/master.mp4"
+              src="/video/catalog/master1.mp4"
               autoPlay
               muted
               loop
               playsInline
               aria-hidden="true"
+              preload="none"
+              poster="/catalog/master.webp"
               tabIndex={-1}
               className={styles.catalogVideo}
             />
@@ -60,12 +62,14 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemSquare}`}
             aria-label="Перейти к разделу Интерьерные свечи">
             <video
-              src="/video/catalog/interior.mp4"
+              src="/video/catalog/interior1.mp4"
               autoPlay
               muted
               loop
               playsInline
               aria-hidden="true"
+              preload="none"
+              poster="/catalog/interior.webp"
               tabIndex={-1}
               className={styles.catalogVideo}
             />
@@ -77,11 +81,13 @@ export default function CatalogSection() {
             className={`${styles.catalogItem} ${styles.catalogItemWide}`}
             aria-label="Перейти к разделу Аромасаше">
             <video
-              src="/video/catalog/sashe.mp4"
+              src="/video/catalog/sashe1.mp4"
               autoPlay
               muted
               loop
               playsInline
+              preload="none"
+              poster="/catalog/sashe.webp"
               aria-hidden="true"
               tabIndex={-1}
               className={styles.catalogVideo}

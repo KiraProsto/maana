@@ -6,13 +6,17 @@ import CartSummary from './CartSummary';
 import styles from '../CartPage.module.css';
 import { products } from '@/app/data/products';
 import { ICartProduct } from '../types';
+import { holders } from '@/app/data/holders';
+import { sachets } from '@/app/data/sachets';
 
 export default function CartLayout() {
   const { cart } = useCart();
 
   const items: ICartProduct[] = Object.entries(cart)
     .map(([id, count]) => {
-      const product = products.find((p) => p.id === Number(id));
+      const allProducts = [...products, ...holders, ...sachets];
+      const product = allProducts.find((p) => p.id === Number(id));
+
       if (!product) return null;
 
       return {

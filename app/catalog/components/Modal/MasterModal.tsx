@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import Image from 'next/image';
 import styles from './MasterModal.module.css';
 
@@ -32,12 +32,23 @@ export default function MasterModal({
 }: MasterModalProps) {
   const [index, setIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
+  const touchStart = useRef(0);
 
   useEffect(() => {
-    if (!isOpen) return;
-
-    Promise.resolve().then(() => setIndex(0));
+    if (isOpen) modalRef.current?.focus();
   }, [isOpen]);
+
+  const gallery: GalleryItem[] = useMemo(() => {
+    if (!item) return [];
+
+    return [
+      { type: 'image' as const, src: item.mainImage },
+      ...(item.images || []).map((src) => ({
+        type: (src.endsWith('.mp4') ? 'video' : 'image') as 'video' | 'image',
+        src,
+      })),
+    ];
+  }, [item]);
 
   useEffect(() => {
     if (isOpen) {
@@ -50,29 +61,24 @@ export default function MasterModal({
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    if (isOpen) modalRef.current?.focus();
-  }, [isOpen]);
-
   if (!isOpen || !item) return null;
 
-  const gallery: GalleryItem[] = [
-    { type: 'image', src: item.mainImage },
-    ...(item.images || []).map((src) => ({
-      type: (src.endsWith('.mp4') ? 'video' : 'image') as 'video' | 'image',
-      src,
-    })),
-  ];
-
-  if (!gallery.length) return null;
-
   const safeIndex = Math.min(index, gallery.length - 1);
-  const current = gallery[safeIndex];
-
   const hasMultiple = gallery.length > 1;
 
   const prev = () => setIndex((i) => (i - 1 + gallery.length) % gallery.length);
   const next = () => setIndex((i) => (i + 1) % gallery.length);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - touchStart.current;
+
+    if (delta > 50) prev();
+    if (delta < -50) next();
+  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -93,26 +99,48 @@ export default function MasterModal({
         </button>
 
         <div className={styles.left}>
-          <div className={styles.imageWrap}>
-            {current.type === 'image' ? (
-              <Image
-                src={current.src}
-                alt={item.title}
-                fill
-                className={styles.mainImage}
-                style={{ objectFit: 'cover' }}
-              />
-            ) : (
-              <video
-                src={current.src}
-                className={styles.mainVideo}
-                muted
-                playsInline
-                autoPlay
-                loop
-                aria-label={`Видео мастер-класса ${item.title}`}
-              />
-            )}
+          <div
+            className={styles.imageWrap}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}>
+            {gallery.map((g, i) => {
+              const active = i === safeIndex;
+
+              if (g.type === 'video') {
+                // видео грузим/проигрываем только активное
+                return active ? (
+                  <video
+                    key={i}
+                    src={g.src}
+                    className={styles.mainVideo}
+                    muted
+                    playsInline
+                    autoPlay
+                    loop
+                    aria-label={`Видео мастер-класса ${item.title}`}
+                  />
+                ) : null;
+              }
+
+              return (
+                <Image
+                  key={i}
+                  src={g.src}
+                  alt={item.title}
+                  fill
+                  sizes="(max-width: 768px) 90vw, 600px"
+                  priority={i === 0}
+                  className={styles.mainImage}
+                  style={{
+                    objectFit: 'cover',
+                    opacity: active ? 1 : 0,
+                    transition: 'opacity 0.15s ease',
+                    pointerEvents: active ? 'auto' : 'none',
+                  }}
+                  aria-hidden={!active}
+                />
+              );
+            })}
 
             {hasMultiple && (
               <>

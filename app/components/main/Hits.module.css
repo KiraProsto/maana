@@ -15,16 +15,27 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  /* позиции под текущий брейкпоинт */
+  --x-left: -450px;
+  --x-right: 450px;
+  --scale-side: 0.79;
+  --size: 400px;
 }
 
 /* карточка */
 .hitsItem {
   position: absolute;
-  transition:
-    transform 0.8s ease,
-    opacity 0.8s ease,
-    width 0.8s ease,
-    height 0.8s ease;
+  width: var(--size);
+  height: var(--size);
+  animation: carousel 9s infinite;
+}
+
+.hitsItem:nth-child(2) {
+  animation-delay: -3s;
+}
+.hitsItem:nth-child(3) {
+  animation-delay: -6s;
 }
 
 .hitsImageWrapper {
@@ -45,6 +56,7 @@
 .hitsName {
   font-size: 20px;
   text-align: center;
+  margin-top: 25px;
 }
 
 .left {
@@ -100,6 +112,55 @@
   transition: 0.3s ease;
 }
 
+@keyframes carousel {
+  /* справа */
+  0%,
+  24% {
+    transform: translateX(var(--x-right)) scale(var(--scale-side));
+    opacity: 0.5;
+    z-index: 1;
+  }
+  /* в центре */
+  33%,
+  57% {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    z-index: 3;
+  }
+  /* слева */
+  66%,
+  91% {
+    transform: translateX(var(--x-left)) scale(var(--scale-side));
+    opacity: 0.5;
+    z-index: 1;
+  }
+  /* возврат вправо (проезжает за центральной) */
+  100% {
+    transform: translateX(var(--x-right)) scale(var(--scale-side));
+    opacity: 0.5;
+    z-index: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hitsItem {
+    animation: none;
+  }
+  .hitsItem:nth-child(1) {
+    transform: translateX(var(--x-left)) scale(var(--scale-side));
+    opacity: 0.5;
+  }
+  .hitsItem:nth-child(2) {
+    transform: translateX(0);
+    opacity: 1;
+    z-index: 3;
+  }
+  .hitsItem:nth-child(3) {
+    transform: translateX(var(--x-right)) scale(var(--scale-side));
+    opacity: 0.5;
+  }
+}
+
 @media (max-width: 1024px) {
   .hits {
     margin-top: 90px;
@@ -140,6 +201,10 @@
 
   .hitsList {
     height: 300px;
+    --x-left: -260px;
+    --x-right: 260px;
+    --scale-side: 0.7;
+    --size: 290px;
   }
 
   .hitsLink {
@@ -157,6 +222,13 @@
     margin-bottom: 50px;
   }
 
+  .hitsList {
+    height: 240px;
+    --x-left: -150px;
+    --x-right: 150px;
+    --scale-side: 0.67;
+    --size: 220px;
+  }
   .hitsName {
     font-size: 14px;
   }
@@ -178,10 +250,6 @@
     height: 190px;
   }
 
-  .hitsList {
-    height: 240px;
-  }
-
   .hitsLink {
     font-size: 14px;
   }
@@ -197,6 +265,13 @@
     margin-bottom: 40px;
   }
 
+  .hitsList {
+    height: 210px;
+    --x-left: -110px;
+    --x-right: 110px;
+    --scale-side: 0.63;
+    --size: 190px;
+  }
   .hitsName {
     font-size: 13px;
   }
@@ -216,10 +291,6 @@
     transform: translateX(110px) scale(0.75);
     width: 160px;
     height: 160px;
-  }
-
-  .hitsList {
-    height: 210px;
   }
 
   .hitsLink {

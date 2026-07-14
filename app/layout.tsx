@@ -4,8 +4,10 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import styles from './layout.module.css';
 import { CartProvider } from './context/CartContext';
+import { DeliveryProvider } from './context/DeliveryContext';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://maana.ru'),
   title: 'МААНА | Свечи и мастер‑классы',
   description:
     'Интерьерные свечи, декор и очные мастер‑классы в уютной студии.',
@@ -36,12 +38,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="ru" data-scroll-behavior="smooth">
       <body className={styles.body}>
         <CartProvider>
-          <Header />
-          <main className={styles.main}>{children}</main>
-          <Footer />
+          <DeliveryProvider>
+            <Header />
+            <main className={styles.main}>{children}</main>
+            <Footer />
+          </DeliveryProvider>
         </CartProvider>
       </body>
     </html>

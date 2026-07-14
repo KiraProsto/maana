@@ -22,7 +22,8 @@
   gap: 25px;
 }
 
-.checkoutForm input {
+.checkoutForm input,
+.checkoutForm textarea {
   padding: 14px 30px;
   border: 1px solid #ccc;
   border-radius: 55px;
@@ -31,7 +32,8 @@
   font-family: var(--font-main);
 }
 
-.checkoutForm input:focus {
+.checkoutForm input:focus,
+.checkoutForm textarea:focus {
   border-color: var(--color-accent);
   outline: none;
   box-shadow: 0 0 6px rgba(242, 177, 59, 0.4);
@@ -47,6 +49,27 @@
   display: flex;
   flex-direction: column;
 }
+
+.formColSm {
+  flex: 0 0 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formColLg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* .comment {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  padding: 12px 25px;
+  cursor: text;
+  font-weight: 500;
+} */
 
 .deliveryRow {
   display: flex;
@@ -70,6 +93,46 @@
 .deliveryTitle {
   font-size: 22px;
   font-weight: 200;
+}
+
+.deliveryNote {
+  font-size: 13px;
+  color: #888;
+  margin-top: -4px;
+}
+
+.consentBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.consentLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.consentLabel input {
+  margin-top: 2px;
+}
+
+.consentLabel a {
+  color: #000;
+  text-decoration: underline;
+}
+
+.consentLabel a:hover {
+  color: var(--color-gray-text);
+}
+
+.consentNote {
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .checkoutBtn {
@@ -249,6 +312,88 @@
   }
 }
 
+.inputError {
+  border-color: #e24b4a !important;
+}
+
+.errorMsg {
+  display: block;
+  font-size: 12px;
+  color: #e24b4a;
+  margin-top: 4px;
+}
+
+.deliveryLabelOzon {
+  position: relative;
+}
+
+.ozonTooltipWrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.ozonAttentionIcon {
+  display: block;
+  opacity: 0.5;
+  transition: opacity 0.15s;
+}
+
+.ozonTooltipWrapper:hover .ozonAttentionIcon {
+  opacity: 1;
+}
+
+.ozonTooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 8px 12px;
+  border-radius: 6px;
+  width: 240px;
+  white-space: normal;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.ozonTooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: #333;
+}
+
+.ozonTooltipWrapper:hover .ozonTooltip {
+  display: block;
+}
+
+.cdekInfo {
+  margin-top: 8px;
+}
+
+.cdekLoading {
+  display: block;
+  font-size: 13px;
+  color: #888;
+}
+
+.cdekResult {
+  display: block;
+  font-size: 13px;
+  color: #2a7a2a;
+  font-weight: 500;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
   .checkout {
@@ -392,4 +537,13 @@
   .checkoutTotalFinal {
     font-size: 15px;
   }
+}
+
+.checkoutForm input:-webkit-autofill,
+.checkoutForm input:-webkit-autofill:hover,
+.checkoutForm input:-webkit-autofill:focus,
+.checkoutForm input:-webkit-autofill:active {
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-text-fill-color: #000 !important;
+  transition: background-color 9999s ease-in-out 0s;
 }

@@ -146,15 +146,15 @@
   width: 28px;
   height: 28px;
   background: #000;
-  mask: url('/icons/burger.png') center/contain no-repeat;
-  -webkit-mask: url('/icons/burger.png') center/contain no-repeat;
+  mask: url('/icons/burger.svg') center/contain no-repeat;
+  -webkit-mask: url('/icons/burger.svg') center/contain no-repeat;
   cursor: pointer;
   z-index: 10;
 }
 
 .burgerOpen {
-  mask: url('/icons/close.png') center/contain no-repeat;
-  -webkit-mask: url('/icons/close.png') center/contain no-repeat;
+  mask: url('/icons/close.svg') center/contain no-repeat;
+  -webkit-mask: url('/icons/close.svg') center/contain no-repeat;
 }
 
 /* МОБИЛЬНЫЙ ПОИСК */
@@ -224,6 +224,7 @@
 
   .logoImg {
     height: 42px;
+    width: 42px;
   }
 
   .logo {
@@ -275,24 +276,66 @@
   .header {
     display: flex !important;
     grid-template-columns: none !important;
-    padding: 10px 12px;
+    padding: 16px 18px;
     align-items: center;
     justify-content: space-between;
-    gap: 10px;
+    gap: 12px;
   }
 
   .logoImg {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
   }
 
   .logo {
-    font-size: 18px;
+    font-size: 22px;
   }
 
   .headerIcons {
     display: flex;
-    gap: 8px;
+    gap: 14px;
+  }
+
+  .headerIcons svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .bagIcon {
+    width: 26px;
+    height: 26px;
+    padding: 0px 0 2px;
+  }
+
+  .burger {
+    width: 28px;
+    height: 28px;
+  }
+
+  .mobileSearch input {
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 32px;
+  }
+}
+
+@media (max-width: 420px) {
+  .header {
+    padding: 14px 16px;
+    gap: 10px;
+  }
+
+  .logoImg {
+    height: 34px;
+    width: 34px;
+  }
+
+  .logo {
+    font-size: 20px;
+  }
+
+  .headerIcons {
+    gap: 12px;
   }
 
   .burger {
@@ -300,46 +343,19 @@
     height: 22px;
   }
 
-  .mobileSearch input {
-    font-size: 14px;
-    padding: 8px 16px;
-    border-radius: 32px;
-  }
-}
-
-@media (max-width: 420px) {
-  .header {
-    padding: 8px 10px;
-    gap: 6px;
-  }
-
-  .logoImg {
-    height: 26px;
+  .searchIconSmall {
     width: 26px;
+    height: 26px;
   }
 
-  .logo {
-    font-size: 16px;
-  }
-
-  .headerIcons {
-    gap: 8px;
-  }
-
-  .burger {
-    width: 20px;
-    height: 20px;
-  }
-
-  .headerIcons img,
-  .headerIcons svg {
-    width: 16px;
-    height: 16px;
+  .bagIcon {
+    width: 22px;
+    height: 25px;
   }
 
   .mobileSearch input {
-    font-size: 13px;
-    padding: 7px 14px;
-    border-radius: 28px;
+    font-size: 15px;
+    padding: 10px 18px;
+    border-radius: 32px;
   }
 }

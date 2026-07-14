@@ -31,12 +31,7 @@ export default function ProductModal({
   const { cart, add, remove, isReady } = useCart();
   const [index, setIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    Promise.resolve().then(() => setIndex(0));
-  }, [isOpen]);
+  const touchStart = useRef(0);
 
   useEffect(() => {
     if (isOpen) {
@@ -58,11 +53,22 @@ export default function ProductModal({
   const idStr = String(product.id);
   const count = cart[idStr] || 0;
   const gallery = product.gallery;
-  const current = gallery[index];
+  const safeIndex = Math.min(index, gallery.length - 1);
   const hasMultiple = gallery.length > 1;
 
   const next = () => setIndex((i) => (i + 1) % gallery.length);
   const prev = () => setIndex((i) => (i - 1 + gallery.length) % gallery.length);
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchStart.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent) => {
+    const delta = e.changedTouches[0].clientX - touchStart.current;
+
+    if (delta > 50) prev();
+    if (delta < -50) next();
+  };
 
   return (
     <div className={styles.overlay} onClick={onClose}>
@@ -83,26 +89,47 @@ export default function ProductModal({
         </button>
 
         <div className={styles.left}>
-          <div className={styles.imageWrap}>
-            {current.type === 'image' ? (
-              <Image
-                src={current.src}
-                alt={product.name}
-                fill
-                className={styles.mainImage}
-                style={{ objectFit: 'cover' }}
-              />
-            ) : (
-              <video
-                src={current.src}
-                className={styles.mainVideo}
-                muted
-                playsInline
-                autoPlay
-                loop
-                aria-label={`Видео товара ${product.name}`}
-              />
-            )}
+          <div
+            className={styles.imageWrap}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}>
+            {gallery.map((g, i) => {
+              const active = i === safeIndex;
+
+              if (g.type === 'video') {
+                return active ? (
+                  <video
+                    key={i}
+                    src={g.src}
+                    className={styles.mainVideo}
+                    muted
+                    playsInline
+                    autoPlay
+                    loop
+                    aria-label={`Видео товара ${product.name}`}
+                  />
+                ) : null;
+              }
+
+              return (
+                <Image
+                  key={i}
+                  src={g.src}
+                  alt={product.name}
+                  fill
+                  sizes="(max-width: 768px) 90vw, 600px"
+                  priority={i === 0}
+                  className={styles.mainImage}
+                  style={{
+                    objectFit: 'cover',
+                    opacity: active ? 1 : 0,
+                    transition: 'opacity 0.15s ease',
+                    pointerEvents: active ? 'auto' : 'none',
+                  }}
+                  aria-hidden={!active}
+                />
+              );
+            })}
 
             {hasMultiple && (
               <>
@@ -113,7 +140,6 @@ export default function ProductModal({
                   aria-label="Предыдущее изображение">
                   ‹
                 </button>
-
                 <button
                   type="button"
                   className={styles.arrowRight}

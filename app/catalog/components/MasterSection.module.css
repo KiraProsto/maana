@@ -82,9 +82,11 @@
 }
 
 .masterCardTitle {
-  font-weight: 300;
+  font-weight: 500;
   margin-bottom: 8px;
   font-family: var(--font-main);
+  font-size: 20px;
+  text-align: left;
 }
 
 .masterCardTime {
