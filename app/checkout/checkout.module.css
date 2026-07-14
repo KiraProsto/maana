@@ -50,6 +50,18 @@
   flex-direction: column;
 }
 
+.formColSm {
+  flex: 0 0 160px;
+  display: flex;
+  flex-direction: column;
+}
+
+.formColLg {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
 /* .comment {
   box-sizing: border-box;
   width: 100%;

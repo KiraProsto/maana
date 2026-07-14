@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
           type: 1,
           from_location: { code: fromCode },
           to_location: { code: toCode },
-          packages: [{ weight, height: 20, length: 20, width: 20 }],
+          packages: [{ weight, height: 10, length: 10, width: 10 }],
         }),
       },
     );
