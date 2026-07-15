@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './ProductsSection.module.css';
 import { useCart } from '@/app/context/CartContext';
 import dynamic from 'next/dynamic';
 
 const ProductModal = dynamic(() => import('./Modal/ProductModal'), {
+  ssr: false,
+});
+
+const PreorderModal = dynamic(() => import('./Modal/PreorderModal'), {
   ssr: false,
 });
 
@@ -19,6 +23,7 @@ interface IProduct {
   advantages?: string;
   characteristics?: string;
   gallery?: string[];
+  count?: string;
 }
 
 interface IProps {
@@ -31,9 +36,21 @@ export default function ProductsSection({ id, title, products }: IProps) {
   const { cart, add, remove, isReady } = useCart();
 
   const [modalProduct, setModalProduct] = useState<IProduct | null>(null);
+  const [preorderProduct, setPreorderProduct] = useState<IProduct | null>(null);
+  const [inventory, setInventory] = useState<Record<string, number>>({});
 
-  const openModal = (item: IProduct) => {
-    setModalProduct(item);
+  useEffect(() => {
+    fetch('/api/inventory')
+      .then((r) => r.json())
+      .then((data: Record<string, number>) => setInventory(data))
+      .catch(() => {});
+  }, []);
+
+  const getStock = (item: IProduct): number => {
+    const key = String(item.id);
+    return inventory[key] !== undefined
+      ? inventory[key]
+      : Number(item.count ?? 1);
   };
 
   return (
@@ -52,7 +69,9 @@ export default function ProductsSection({ id, title, products }: IProps) {
       <div className={styles.interiorGrid}>
         {products.map((item) => {
           const idStr = String(item.id);
-          const count = cart[idStr] || 0;
+          const cartCount = cart[idStr] || 0;
+          const stock = getStock(item);
+          const isOutOfStock = stock === 0;
 
           return (
             <button
@@ -65,7 +84,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
                   e.target.closest(`.${styles.productCardBtn}`)
                 )
                   return;
-                openModal(item);
+                setModalProduct(item);
               }}>
               <Image
                 src={item.mainImage}
@@ -77,9 +96,18 @@ export default function ProductsSection({ id, title, products }: IProps) {
               <div className={styles.productCardName}>{item.name}</div>
               <div className={styles.productCardPrice}>{item.price}</div>
 
-              {!isReady ? (
+              {isOutOfStock ? (
+                <div
+                  className={`${styles.productCardBtn} ${styles.preorderBtn}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setPreorderProduct(item);
+                  }}>
+                  Под заказ
+                </div>
+              ) : !isReady ? (
                 <div className={styles.productCardBtn}>В корзину</div>
-              ) : count === 0 ? (
+              ) : cartCount === 0 ? (
                 <div
                   className={styles.productCardBtn}
                   onClick={(e) => {
@@ -98,7 +126,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
                     aria-label="Уменьшить количество">
                     −
                   </div>
-                  <div className={styles.counterValue}>{count}</div>
+                  <div className={styles.counterValue}>{cartCount}</div>
                   <div
                     className={styles.counterBtn}
                     onClick={() => add(idStr)}
@@ -129,7 +157,16 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 src,
               })),
             ],
+            stock: getStock(modalProduct),
           }}
+        />
+      )}
+
+      {preorderProduct && (
+        <PreorderModal
+          isOpen
+          onClose={() => setPreorderProduct(null)}
+          productName={preorderProduct.name}
         />
       )}
     </section>
