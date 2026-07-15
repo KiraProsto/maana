@@ -25,16 +25,17 @@ type FormData = {
 };
 
 function calcMarketplaceCost(weightGrams: number): number {
-  if (weightGrams <= 500) return 300;
+  if (weightGrams <= 500) return 249;
   if (weightGrams <= 1000) return 380;
   if (weightGrams <= 2000) return 480;
-  return 600;
+  return 500;
 }
 
 export default function CheckoutForm() {
   const router = useRouter();
   const { cart } = useCart();
-  const { deliveryCost, deliveryDays, setDelivery, setDeliveryLoading } = useDelivery();
+  const { deliveryCost, deliveryDays, setDelivery, setDeliveryLoading } =
+    useDelivery();
   const params = useSearchParams();
   const singleId = params.get('product');
   const allProducts = [...products, ...holders, ...sachets];
@@ -167,6 +168,7 @@ export default function CheckoutForm() {
                     .map((id) => allProducts.find((p) => p.id === Number(id)))
                     .filter(Boolean)
               ).map((p) => ({
+                id: p!.id,
                 name: p!.name,
                 count: cart[String(p!.id)] || 1,
                 price: Number(String(p!.price).replace(/\D/g, '')),

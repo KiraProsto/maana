@@ -13,6 +13,7 @@ interface IProduct {
   advantages?: string;
   characteristics?: string;
   gallery?: string[];
+  count?: string;
 }
 
 interface ICatalogContentProps {
