@@ -1,8 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import Image from 'next/image';
 import styles from '../checkout.module.css';
 import { useCart } from '@/app/context/CartContext';
 import { useDelivery } from '@/app/context/DeliveryContext';
@@ -16,24 +18,36 @@ type FormData = {
   phone: string;
   email: string;
   city: string;
-  street: string;
-  house: string;
-  flat?: string;
+  pickupAddress: string;
   delivery: string;
   consent: boolean;
   comment?: string;
 };
 
+function calcMarketplaceCost(weightGrams: number): number {
+  if (weightGrams <= 500) return 249;
+  if (weightGrams <= 1000) return 380;
+  if (weightGrams <= 2000) return 480;
+  return 500;
+}
+
 export default function CheckoutForm() {
   const router = useRouter();
   const { cart } = useCart();
-  const { deliveryCost, deliveryDays, setDelivery } = useDelivery();
+  const { deliveryCost, deliveryDays, setDelivery, setDeliveryLoading } =
+    useDelivery();
   const params = useSearchParams();
   const singleId = params.get('product');
   const allProducts = [...products, ...holders, ...sachets];
 
   const [cdekLoading, setCdekLoading] = useState(false);
   const [cdekError, setCdekError] = useState<string | null>(null);
+
+  const totalItems = singleId
+    ? cart[singleId] || 1
+    : Object.values(cart).reduce((s, c) => s + c, 0);
+  const estimatedWeight = Math.max(300, totalItems * 300);
+  const marketplaceCost = calcMarketplaceCost(estimatedWeight);
 
   let total = 0;
   if (singleId) {
@@ -62,6 +76,28 @@ export default function CheckoutForm() {
   const cityValue = watch('city');
 
   useEffect(() => {
+    if (deliveryValue === 'WB') {
+      setDeliveryLoading(true);
+      setDelivery(0, null);
+      setCdekError(null);
+      const t = setTimeout(() => {
+        setDelivery(marketplaceCost, 'от 2 дней');
+        setDeliveryLoading(false);
+      }, 600);
+      return () => clearTimeout(t);
+    }
+
+    if (deliveryValue === 'OZON') {
+      setDeliveryLoading(true);
+      setDelivery(0, null);
+      setCdekError(null);
+      const t = setTimeout(() => {
+        setDelivery(249, 'от 2 дней');
+        setDeliveryLoading(false);
+      }, 600);
+      return () => clearTimeout(t);
+    }
+
     if (deliveryValue !== 'СДЭК') {
       setDelivery(0, null);
       setCdekError(null);
@@ -78,15 +114,13 @@ export default function CheckoutForm() {
       setCdekLoading(true);
       setCdekError(null);
       try {
-        const totalItems = singleId
-          ? cart[singleId] || 1
-          : Object.values(cart).reduce((s, c) => s + c, 0);
-        const weight = Math.max(500, totalItems * 300);
-
         const res = await fetch('/api/cdek', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ city: cityValue.trim(), weight }),
+          body: JSON.stringify({
+            city: cityValue.trim(),
+            weight: estimatedWeight,
+          }),
         });
         const data = await res.json();
 
@@ -123,9 +157,7 @@ export default function CheckoutForm() {
             phone: data.phone,
             email: data.email,
             city: data.city,
-            street: data.street,
-            house: data.house,
-            flat: data.flat || '',
+            pickupAddress: data.pickupAddress,
             delivery: data.delivery,
             deliveryCost: String(deliveryCost),
             comment: data.comment || '',
@@ -136,6 +168,7 @@ export default function CheckoutForm() {
                     .map((id) => allProducts.find((p) => p.id === Number(id)))
                     .filter(Boolean)
               ).map((p) => ({
+                id: p!.id,
                 name: p!.name,
                 count: cart[String(p!.id)] || 1,
                 price: Number(String(p!.price).replace(/\D/g, '')),
@@ -217,9 +250,10 @@ export default function CheckoutForm() {
       </div>
 
       <h3 className={styles.deliveryTitle}>Доставка</h3>
+      <p className={styles.deliveryNote}>Доставляем только до пунктов выдачи</p>
 
       <div className={styles.formRow}>
-        <div className={styles.formCol}>
+        <div className={styles.formColSm}>
           <input
             id="city"
             type="text"
@@ -233,42 +267,21 @@ export default function CheckoutForm() {
           )}
         </div>
 
-        <div className={styles.formCol}>
+        <div className={styles.formColLg}>
           <input
-            id="street"
+            id="pickupAddress"
             type="text"
-            placeholder="Улица"
-            className={errors.street ? styles.inputError : ''}
-            autoComplete="address-line1"
-            {...register('street', { required: 'Введите улицу' })}
+            placeholder="Адрес пункта выдачи"
+            className={errors.pickupAddress ? styles.inputError : ''}
+            {...register('pickupAddress', {
+              required: 'Введите адрес пункта выдачи',
+            })}
           />
-          {errors.street && (
-            <span className={styles.errorMsg}>{errors.street.message}</span>
+          {errors.pickupAddress && (
+            <span className={styles.errorMsg}>
+              {errors.pickupAddress.message}
+            </span>
           )}
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formCol}>
-          <input
-            id="house"
-            type="text"
-            placeholder="Дом"
-            className={errors.house ? styles.inputError : ''}
-            {...register('house', { required: 'Введите номер дома' })}
-          />
-          {errors.house && (
-            <span className={styles.errorMsg}>{errors.house.message}</span>
-          )}
-        </div>
-
-        <div className={styles.formCol}>
-          <input
-            id="flat"
-            type="text"
-            placeholder="Квартира / Офис"
-            {...register('flat')}
-          />
         </div>
       </div>
 
@@ -291,7 +304,7 @@ export default function CheckoutForm() {
           СДЭК
           {cdekLoading
             ? ' (считаем…)'
-            : deliveryDays
+            : deliveryDays && deliveryValue === 'СДЭК'
               ? ` (${deliveryDays})`
               : ''}
         </label>
@@ -304,7 +317,7 @@ export default function CheckoutForm() {
           />{' '}
           WB (от 2 дней)
         </label>
-        <label htmlFor="delivery-ozon">
+        <label htmlFor="delivery-ozon" className={styles.deliveryLabelOzon}>
           <input
             id="delivery-ozon"
             type="radio"
@@ -312,14 +325,24 @@ export default function CheckoutForm() {
             {...register('delivery')}
           />{' '}
           OZON (от 2 дней)
+          <span className={styles.ozonTooltipWrapper}>
+            <Image
+              src="/icons/attention.svg"
+              alt="Важно"
+              width={16}
+              height={16}
+              className={styles.ozonAttentionIcon}
+            />
+            <span className={styles.ozonTooltip}>
+              Укажите номер телефона, привязанный к вашему аккаунту Ozon — без
+              этого вы не сможете забрать посылку
+            </span>
+          </span>
         </label>
       </div>
       {errors.delivery && (
         <span className={styles.errorMsg}>{errors.delivery.message}</span>
       )}
-      <p className={styles.deliveryNote}>
-        *Доставляем только до пунктов выдачи
-      </p>
 
       {deliveryValue === 'СДЭК' && !cdekLoading && cdekError && (
         <span className={styles.errorMsg}>{cdekError}</span>

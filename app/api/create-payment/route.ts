@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
 
   if (deliveryCost > 0) {
     receiptItems.push({
-      description: 'Доставка СДЭК',
+      description: `Доставка ${metadata?.delivery || 'СДЭК'}`,
       quantity: '1',
       amount: {
         value: deliveryCost.toFixed(2),

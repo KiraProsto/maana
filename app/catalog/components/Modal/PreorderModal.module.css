@@ -1,0 +1,74 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  z-index: 3000;
+}
+
+.modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 50px 40px 40px;
+  position: relative;
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+}
+
+.close {
+  border: none;
+  background: none;
+  position: absolute;
+  top: 16px;
+  right: 22px;
+  font-size: 32px;
+  cursor: pointer;
+  user-select: none;
+  line-height: 1;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 200;
+  margin-bottom: 10px;
+}
+
+.product {
+  font-size: 15px;
+  color: var(--color-gray-text, #888);
+  margin-bottom: 18px;
+}
+
+.desc {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 24px;
+  color: #444;
+}
+
+.tel {
+  font-size: 16px;
+  font-weight: 200;
+  margin-bottom: 20px;
+}
+
+.socials {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+@media (max-width: 480px) {
+  .modal {
+    padding: 40px 24px 32px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+}

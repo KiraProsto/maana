@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import styles from './ProductModal.module.css';
 import { useCart } from '@/app/context/CartContext';
+import PreorderModal from './PreorderModal';
 
 interface GalleryItem {
   type: 'image' | 'video';
@@ -20,6 +21,7 @@ interface ProductModalProps {
     advantages: string;
     characteristics: string;
     gallery: GalleryItem[];
+    stock?: number;
   } | null;
 }
 
@@ -30,6 +32,7 @@ export default function ProductModal({
 }: ProductModalProps) {
   const { cart, add, remove, isReady } = useCart();
   const [index, setIndex] = useState(0);
+  const [preorderOpen, setPreorderOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef(0);
 
@@ -52,6 +55,7 @@ export default function ProductModal({
 
   const idStr = String(product.id);
   const count = cart[idStr] || 0;
+  const isOutOfStock = product.stock === 0;
   const gallery = product.gallery;
   const safeIndex = Math.min(index, gallery.length - 1);
   const hasMultiple = gallery.length > 1;
@@ -192,7 +196,14 @@ export default function ProductModal({
             </>
           )}
 
-          {!isReady ? (
+          {isOutOfStock ? (
+            <button
+              className={styles.btn}
+              type="button"
+              onClick={() => setPreorderOpen(true)}>
+              Под заказ
+            </button>
+          ) : !isReady ? (
             <button className={styles.btn} type="button">
               В корзину
             </button>
@@ -226,6 +237,12 @@ export default function ProductModal({
           )}
         </div>
       </div>
+
+      <PreorderModal
+        isOpen={preorderOpen}
+        onClose={() => setPreorderOpen(false)}
+        productName={product.name}
+      />
     </div>
   );
 }
