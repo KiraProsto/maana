@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description:
     'Интерьерные свечи, декор и очные мастер‑классы в уютной студии.',
   icons: {
-    icon: '/favicon.png',
+    icon: '/favicon.ico',
   },
   openGraph: {
     title: 'МААНА — интерьерные свечи и мастер‑классы',
