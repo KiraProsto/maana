@@ -19,7 +19,11 @@ async function decrementInventory(items: { id?: number; count: number }[]) {
       }
     }
 
-    await fs.writeFile(inventoryPath, JSON.stringify(inventory, null, 2), 'utf-8');
+    await fs.writeFile(
+      inventoryPath,
+      JSON.stringify(inventory, null, 2),
+      'utf-8',
+    );
   } catch (err) {
     console.error('Ошибка обновления инвентаря:', err);
   }
@@ -32,7 +36,8 @@ export async function POST(req: NextRequest) {
     const payment = event.object;
     const meta = payment.metadata || {};
 
-    let items: { id?: number; name: string; count: number; price: number }[] = [];
+    let items: { id?: number; name: string; count: number; price: number }[] =
+      [];
     try {
       items = JSON.parse(meta.items || '[]');
     } catch {
@@ -54,7 +59,8 @@ export async function POST(req: NextRequest) {
       <p><b>ФИО:</b> ${meta.fio || '-'}</p>
       <p><b>Телефон:</b> ${meta.phone || '-'}</p>
       <p><b>Email:</b> ${meta.email || '-'}</p>
-      <p><b>Адрес:</b> ${meta.city || ''}, ${meta.street || ''}, д. ${meta.house || ''}${meta.flat ? `, кв./офис ${meta.flat}` : ''}</p>
+      <p><b>Город:</b> ${meta.city || '-'}</p>
+      <p><b>Адрес пункта выдачи:</b> ${meta.pickupAddress || '-'}</p>
       <p><b>Способ доставки:</b> ${meta.delivery || '-'}</p>
       <p><b>Комментарий:</b> ${meta.comment || '-'}</p>
       <p><b>Товары:</b></p>
