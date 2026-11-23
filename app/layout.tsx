@@ -1,10 +1,6 @@
 import { Metadata } from 'next';
 import './globals.css';
-import Header from './components/Header';
-import Footer from './components/Footer';
 import styles from './layout.module.css';
-import { CartProvider } from './context/CartContext';
-import { DeliveryProvider } from './context/DeliveryContext';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://maana.ru'),
@@ -39,15 +35,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ru" data-scroll-behavior="smooth">
-      <body className={styles.body}>
-        <CartProvider>
-          <DeliveryProvider>
-            <Header />
-            <main className={styles.main}>{children}</main>
-            <Footer />
-          </DeliveryProvider>
-        </CartProvider>
-      </body>
+      <body className={styles.body}>{children}</body>
     </html>
   );
 }
