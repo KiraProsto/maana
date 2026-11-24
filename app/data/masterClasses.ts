@@ -52,7 +52,7 @@ export const masterClasses = [
     `,
     age: '14+',
     duration: '3-4 часа',
-    price: '2500-3500 руб',
+    price: '2500 руб',
     mainImage: '/img/masterClasses/komand.webp',
     images: ['/video/masterClasses/comand.mp4'],
   },
