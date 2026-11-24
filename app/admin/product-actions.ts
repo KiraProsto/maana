@@ -1,5 +1,6 @@
 'use server';
 
+import { randomUUID } from 'node:crypto';
 import { revalidatePath } from 'next/cache';
 import { verifySession } from '@/app/lib/auth/session';
 import { priceToKopecks } from '@/app/lib/catalog/price';
@@ -39,10 +40,23 @@ export async function changeProducts(
 
   try {
     const prisma = getPrisma();
-    const where = { id: { in: [...new Set(ids)] } };
+    const where = { id: { in: [...new Set(ids)] }, deletionToken: null };
     let count: number;
     if (operation === 'delete') {
-      ({ count } = await prisma.product.deleteMany({ where }));
+      const undoToken = randomUUID();
+      const deleted = await prisma.product.updateManyAndReturn({
+        where,
+        data: { deletionToken: undoToken },
+        select: { name: true },
+      });
+      if (!deleted.length) return { error: 'Выбранные товары уже отсутствуют.' };
+
+      refreshProducts();
+      revalidatePath('/admin/products/[productId]', 'page');
+      const message = deleted.length === 1
+        ? `«${deleted[0].name}» удалён`
+        : `Удалено товаров: ${deleted.length}`;
+      return { message, undoToken };
     } else if (operation === 'status' && isProductStatus(value)) {
       ({ count } = await prisma.product.updateMany({ where, data: { status: value } }));
     } else if (operation === 'category' && typeof value === 'string' && value.length <= 100) {
@@ -56,10 +70,32 @@ export async function changeProducts(
 
     refreshProducts();
     if (!count) return { error: 'Выбранные товары уже отсутствуют.' };
-    return { message: operation === 'delete' ? `Удалено товаров: ${count}` : `Обновлено товаров: ${count}` };
+    return { message: `Обновлено товаров: ${count}` };
   } catch (error) {
     console.error('Ошибка группового изменения товаров:', error);
     return { error: 'Не удалось изменить товары. Попробуй ещё раз.' };
+  }
+}
+
+export async function restoreProducts(undoToken: string) {
+  await verifyAdmin();
+  if (typeof undoToken !== 'string' || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(undoToken)) {
+    return { error: 'Не удалось определить удалённые товары.' };
+  }
+
+  try {
+    const { count } = await getPrisma().product.updateMany({
+      where: { deletionToken: undoToken },
+      data: { deletionToken: null },
+    });
+
+    refreshProducts();
+    revalidatePath('/admin/products/[productId]', 'page');
+    if (!count) return { message: 'Товары уже восстановлены.' };
+    return { message: count === 1 ? 'Товар восстановлен.' : `Восстановлено товаров: ${count}` };
+  } catch (error) {
+    console.error('Ошибка восстановления товаров:', error);
+    return { error: 'Не удалось вернуть товары. Попробуй ещё раз.' };
   }
 }
 
@@ -122,7 +158,7 @@ export async function saveProduct(id: number | null, updatedAt: string, formData
     const [category, existing] = await Promise.all([
       prisma.category.findUnique({ where: { key: categoryKey }, select: { key: true } }),
       id === null ? null : prisma.product.findUnique({
-        where: { id },
+        where: { id, deletionToken: null },
         select: { mainImage: true, updatedAt: true, images: { select: { src: true, position: true } } },
       }),
     ]);
@@ -161,7 +197,7 @@ export async function saveProduct(id: number | null, updatedAt: string, formData
         });
       }
 
-      const { count } = await tx.product.updateMany({ where: { id, updatedAt: editedAt }, data });
+      const { count } = await tx.product.updateMany({ where: { id, updatedAt: editedAt, deletionToken: null }, data });
       if (!count) return null;
       await tx.productImage.deleteMany({ where: { productId: id } });
       if (gallery.length) {

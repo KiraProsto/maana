@@ -18,6 +18,7 @@ export async function getAdminProducts({ query, category, status, page }: Produc
   const prisma = getPrisma();
   const productId = /^[1-9]\d{0,9}$/.test(query) ? Number(query) : 0;
   const where: Prisma.ProductWhereInput = {
+    deletionToken: null,
     ...(category && { categoryKey: category }),
     ...(status === 'OUT_OF_STOCK'
       ? { stock: 0 }
@@ -68,7 +69,7 @@ export type AdminProduct = Awaited<ReturnType<typeof getAdminProducts>>['product
 
 export function getEditableProduct(id: number) {
   return getPrisma().product.findUnique({
-    where: { id },
+    where: { id, deletionToken: null },
     include: {
       images: { orderBy: { position: 'asc' }, select: { src: true, position: true } },
     },

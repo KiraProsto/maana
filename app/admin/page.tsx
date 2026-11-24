@@ -84,7 +84,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </nav>
 
             <ProductsTable
-              key={productsHref(category, result.currentPage)}
+              key={productsHref(category, page)}
               products={result.products}
               categories={result.categories}
             />

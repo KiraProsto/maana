@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import type { FormEvent } from 'react';
 import { formatRubles } from '@/app/lib/catalog/price';
-import { changeProducts } from '../product-actions';
+import { changeProducts, restoreProducts } from '../product-actions';
 import { productStatuses } from '../product-statuses';
 import type { AdminProduct } from '../products';
 import styles from '../products.module.css';
@@ -18,6 +18,12 @@ const dateFormatter = new Intl.DateTimeFormat('ru-RU', {
 
 type Dialog = { action: 'delete' | 'category' | 'status'; products: AdminProduct[] };
 
+interface DeletedProductsNotice {
+  token: string;
+  message: string;
+  error?: string;
+}
+
 interface ProductsTableProps {
   products: AdminProduct[];
   categories: { key: string; title: string }[];
@@ -27,6 +33,7 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [dialog, setDialog] = useState<Dialog | null>(null);
   const [message, setMessage] = useState('');
+  const [deletedNotices, setDeletedNotices] = useState<DeletedProductsNotice[]>([]);
   const [error, setError] = useState('');
   const [pending, startTransition] = useTransition();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -74,7 +81,12 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
         }
 
         setSelectedIds([]);
-        setMessage(result.message ?? '');
+        if (result.undoToken && result.message) {
+          const notice = { token: result.undoToken, message: result.message };
+          setDeletedNotices((notices) => [...notices, notice]);
+        } else {
+          setMessage(result.message ?? '');
+        }
         closeDialog();
       } catch {
         setError('Не удалось выполнить действие. Проверь подключение и попробуй ещё раз.');
@@ -82,9 +94,55 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
     });
   }
 
+  function dismissNotice(token: string) {
+    setDeletedNotices((notices) => notices.filter((notice) => notice.token !== token));
+  }
+
+  function undoDeletion(token: string) {
+    if (pending) return;
+
+    startTransition(async () => {
+      try {
+        const result = await restoreProducts(token);
+        if (!result.error) {
+          dismissNotice(token);
+          setMessage(result.message ?? '');
+          return;
+        }
+        setDeletedNotices((notices) => notices.map((notice) =>
+          notice.token === token ? { ...notice, error: result.error } : notice,
+        ));
+      } catch {
+        setDeletedNotices((notices) => notices.map((notice) =>
+          notice.token === token ? { ...notice, error: 'Проверь подключение и попробуй ещё раз.' } : notice,
+        ));
+      }
+    });
+  }
+
   return (
     <>
       {message && <p className={styles.actionMessage} role="status">{message}</p>}
+      {deletedNotices.length > 0 && (
+        <div className={styles.undoNotices} aria-label="Уведомления об удалении">
+          {deletedNotices.map(({ token, message, error }) => (
+            <div className={styles.undoNotice} key={token}>
+              <span className={styles.undoCheck} aria-hidden="true">✓</span>
+              <div>
+                <p role="status">{message}</p>
+                {error && <p className={styles.undoError} role="alert">{error}</p>}
+              </div>
+              <button type="button" disabled={pending} onClick={() => undoDeletion(token)}>Вернуть</button>
+              <button
+                className={styles.dismissNotice}
+                type="button"
+                disabled={pending}
+                aria-label={`Закрыть уведомление «${message}»`}
+                onClick={() => dismissNotice(token)}>×</button>
+            </div>
+          ))}
+        </div>
+      )}
       {selected.length > 0 && (
         <div className={styles.bulkActions} aria-label="Действия с выбранными товарами">
           <strong aria-live="polite">Выбрано: {selected.length}</strong>
@@ -224,7 +282,7 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
                 </label>
               )}
               {dialog.action === 'delete' && (
-                <p>Товары исчезнут из каталога. Восстановить удалённые записи через админку нельзя.</p>
+                <p>Товары исчезнут из списка и каталога. Сразу после удаления их можно вернуть через уведомление.</p>
               )}
             </fieldset>
 
@@ -236,7 +294,7 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
               <button
                 className={dialog.action === 'delete' ? styles.dangerButton : styles.searchButton}
                 type="submit" disabled={pending}>
-                {pending ? 'Подожди…' : dialog.action === 'delete' ? 'Удалить навсегда' : 'Сохранить'}
+                {pending ? 'Подожди…' : dialog.action === 'delete' ? 'Удалить' : 'Сохранить'}
               </button>
             </div>
           </form>

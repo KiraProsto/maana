@@ -11,6 +11,7 @@ import { usesDatabaseCatalog } from './source';
 import type { CatalogMasterClass, CatalogProduct, ProductSummary } from './types';
 
 const published = { status: 'PUBLISHED' as const };
+const publishedProduct = { ...published, deletionToken: null };
 const productSummaryFields = {
   id: true,
   name: true,
@@ -58,7 +59,7 @@ export async function getCatalogProducts(): Promise<CatalogProduct[]> {
   }
 
   const rows = await getPrisma().product.findMany({
-    where: published,
+    where: publishedProduct,
     orderBy: [{ position: 'asc' }, { id: 'asc' }],
     select: {
       ...productSummaryFields,
@@ -83,7 +84,7 @@ export async function getProductSummaries(): Promise<ProductSummary[]> {
   }
 
   return getPrisma().product.findMany({
-    where: published,
+    where: publishedProduct,
     select: productSummaryFields,
   });
 }
@@ -92,7 +93,7 @@ export async function getHits(): Promise<ProductSummary[]> {
   if (!usesDatabaseCatalog()) return products.slice(0, 3).map(toProductSummary);
 
   return getPrisma().product.findMany({
-    where: { ...published, categoryKey: 'interior' },
+    where: { ...publishedProduct, categoryKey: 'interior' },
     orderBy: [{ position: 'asc' }, { id: 'asc' }],
     take: 3,
     select: productSummaryFields,

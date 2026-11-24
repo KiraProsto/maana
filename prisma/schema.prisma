@@ -38,10 +38,12 @@ model Product {
   characteristics String            @default("")
   status          PublicationStatus @default(DRAFT)
   position        Int
+  deletionToken   String?           @db.Uuid
   updatedAt       DateTime          @updatedAt
   images          ProductImage[]
 
   @@index([categoryKey, position])
+  @@index([deletionToken])
 }
 
 model ProductImage {
