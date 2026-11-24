@@ -338,7 +338,8 @@
   flex-wrap: nowrap;
 }
 
-.rowActions button {
+.rowActions button,
+.rowActions a {
   display: grid;
   width: 36px;
   height: 36px;
@@ -349,7 +350,8 @@
   cursor: pointer;
 }
 
-.rowActions button:hover {
+.rowActions button:hover,
+.rowActions a:hover {
   background: #f3f2ee;
 }
 
@@ -416,12 +418,6 @@
   resize: vertical;
 }
 
-.productFields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
 .dialogError {
   margin-top: 12px;
   color: #963f2f;
@@ -437,8 +433,21 @@
   cursor: wait;
 }
 
-@media (max-width: 420px) {
-  .productFields {
-    grid-template-columns: 1fr;
-  }
+.pageHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.primaryLink {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: var(--admin-green);
+  color: #fff;
+  text-decoration: none;
 }

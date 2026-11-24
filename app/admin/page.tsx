@@ -1,16 +1,10 @@
-import Image from 'next/image';
 import Link from 'next/link';
 import { verifySession } from '@/app/lib/auth/session';
-import { logout } from './actions';
+import AdminSidebar from './components/AdminSidebar';
 import { getAdminProducts, productPageSize } from './products';
 import { isProductStatus, productStatuses } from './product-statuses';
 import ProductsTable from './components/ProductsTable';
 import styles from './products.module.css';
-
-const roleNames = {
-  developer: 'Разработчик',
-  admin: 'Администратор',
-};
 
 interface AdminPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -46,37 +40,13 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
 
   return (
     <div className={styles.dashboard}>
-      <aside className={styles.sidebar}>
-        <div>
-          <Link className={styles.brand} href="/admin">
-            <Image src="/logo.svg" alt="МААНА" width={30} height={30} />
-            <span>
-              <strong>МААНА</strong>
-              <small>Админ-панель</small>
-            </span>
-          </Link>
-
-          <nav className={styles.navigation} aria-label="Разделы админ-панели">
-            <Link href="/admin" aria-current="page">Товары</Link>
-            <span aria-disabled="true">Мастер-классы</span>
-            <span aria-disabled="true">Настройки</span>
-          </nav>
-        </div>
-
-        <div className={styles.account}>
-          <Link href="/">Открыть сайт</Link>
-          <div>
-            <strong>{session.login}</strong>
-            <small>{roleNames[session.role]}</small>
-          </div>
-          <form action={logout}>
-            <button className={styles.secondaryButton} type="submit">Выйти</button>
-          </form>
-        </div>
-      </aside>
+      <AdminSidebar session={session} />
 
       <main className={styles.content} aria-labelledby="admin-title">
-        <h1 id="admin-title">Товары</h1>
+        <div className={styles.pageHeading}>
+          <h1 id="admin-title">Товары</h1>
+          {result && <Link className={styles.primaryLink} href="/admin/products/new">+ Добавить товар</Link>}
+        </div>
         {!result ? (
           <p role="status">Укажи DATABASE_URL в .env.local и перезапусти сайт.</p>
         ) : (

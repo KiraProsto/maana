@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useRef, useState, useTransition } from 'react';
 import type { FormEvent } from 'react';
 import { formatRubles } from '@/app/lib/catalog/price';
-import { changeProducts, updateProduct } from '../product-actions';
+import { changeProducts } from '../product-actions';
 import { productStatuses } from '../product-statuses';
 import type { AdminProduct } from '../products';
 import styles from '../products.module.css';
@@ -15,9 +16,7 @@ const dateFormatter = new Intl.DateTimeFormat('ru-RU', {
   timeZone: 'Europe/Moscow',
 });
 
-type Dialog =
-  | { action: 'edit'; product: AdminProduct }
-  | { action: 'delete' | 'category' | 'status'; products: AdminProduct[] };
+type Dialog = { action: 'delete' | 'category' | 'status'; products: AdminProduct[] };
 
 interface ProductsTableProps {
   products: AdminProduct[];
@@ -64,13 +63,11 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
     setError('');
     startTransition(async () => {
       try {
-        const result = dialog.action === 'edit'
-          ? await updateProduct(dialog.product.id, dialog.product.updatedAt.toISOString(), data)
-          : await changeProducts(
-              dialog.products.map(({ id }) => id),
-              dialog.action,
-              String(data.get('value') ?? ''),
-            );
+        const result = await changeProducts(
+          dialog.products.map(({ id }) => id),
+          dialog.action,
+          String(data.get('value') ?? ''),
+        );
         if (result.error) {
           setError(result.error);
           return;
@@ -168,12 +165,11 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
                 </td>
                 <td>
                   <div className={styles.rowActions}>
-                    <button type="button" title="Изменить" aria-label={`Изменить «${product.name}»`}
-                      onClick={() => openDialog({ action: 'edit', product })}>
+                    <Link href={`/admin/products/${product.id}`} title="Изменить" aria-label={`Изменить «${product.name}»`}>
                       <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
                         <path d="m14 5 5 5M4 20l1-5L16 4a2 2 0 0 1 3 0l1 1a2 2 0 0 1 0 3L9 19l-5 1Z" />
                       </svg>
-                    </button>
+                    </Link>
                     <button type="button" title="Удалить" aria-label={`Удалить «${product.name}»`}
                       className={styles.deleteIcon}
                       onClick={() => openDialog({ action: 'delete', products: [product] })}>
@@ -201,7 +197,6 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
           }}>
           <form onSubmit={submit}>
             <h2 id="product-dialog-title">
-              {dialog.action === 'edit' && 'Редактирование товара'}
               {dialog.action === 'category' && 'Сменить категорию'}
               {dialog.action === 'status' && 'Изменить статус'}
               {dialog.action === 'delete' && (dialog.products.length === 1
@@ -210,28 +205,6 @@ export default function ProductsTable({ products, categories }: ProductsTablePro
             </h2>
 
             <fieldset disabled={pending}>
-              {dialog.action === 'edit' && (
-                <>
-                  <label>Название<input name="name" maxLength={250} required defaultValue={dialog.product.name} /></label>
-                  <div className={styles.productFields}>
-                    <label>Цена, ₽<input name="price" inputMode="decimal" required defaultValue={dialog.product.priceKopecks / 100} /></label>
-                    <label>Остаток, шт<input name="stock" type="number" min={0} max={2147483647} required defaultValue={dialog.product.stock} /></label>
-                    <label>Категория
-                      <select name="category" defaultValue={dialog.product.categoryKey}>
-                        {categories.map(({ key, title }) => <option key={key} value={key}>{title}</option>)}
-                      </select>
-                    </label>
-                    <label>Статус
-                      <select name="status" defaultValue={dialog.product.status}>
-                        {Object.entries(productStatuses).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-                      </select>
-                    </label>
-                  </div>
-                  <label>Описание<textarea name="description" maxLength={20000} defaultValue={dialog.product.description} /></label>
-                  <label>Преимущества<textarea name="advantages" maxLength={20000} defaultValue={dialog.product.advantages} /></label>
-                  <label>Характеристики<textarea name="characteristics" maxLength={20000} defaultValue={dialog.product.characteristics} /></label>
-                </>
-              )}
               {dialog.action === 'category' && (
                 <label>Новая категория
                   <select name="value" required defaultValue="">

@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 import { verifySession } from '@/app/lib/auth/session';
 import { priceToKopecks } from '@/app/lib/catalog/price';
 import { getPrisma } from '@/app/lib/prisma';
+import { prepareProductImage, storeProductImages } from '@/app/lib/product-media';
+import { maxGalleryPhotos, maxPhotoBytes, maxUploadBytes } from './product-photo-limits';
 import { isProductStatus } from './product-statuses';
 
 const maxInt = 2_147_483_647;
@@ -61,14 +63,14 @@ export async function changeProducts(
   }
 }
 
-export async function updateProduct(id: number, updatedAt: string, formData: FormData) {
+export async function saveProduct(id: number | null, updatedAt: string, formData: FormData) {
   await verifyAdmin();
-  if (!validId(id) || typeof updatedAt !== 'string' || !(formData instanceof FormData)) {
+  if ((id !== null && !validId(id)) || typeof updatedAt !== 'string' || !(formData instanceof FormData)) {
     return { error: 'Не удалось определить товар.' };
   }
 
   const editedAt = new Date(updatedAt);
-  if (!Number.isFinite(editedAt.getTime())) return { error: 'Обнови страницу и повтори попытку.' };
+  if (id !== null && !Number.isFinite(editedAt.getTime())) return { error: 'Обнови страницу и повтори попытку.' };
 
   const read = (key: string) => String(formData.get(key) ?? '').trim();
   const name = read('name');
@@ -96,19 +98,82 @@ export async function updateProduct(id: number, updatedAt: string, formData: For
     return { error: 'Введи цену в рублях, до двух знаков после запятой.' };
   }
 
+  const cover = formData.get('cover');
+  const newCover = cover instanceof File && cover.size > 0 ? cover : null;
+  const newGallery = formData.getAll('galleryFiles');
+  if (!newGallery.every((file): file is File => file instanceof File && file.size > 0)) {
+    return { error: 'Проверь файлы в галерее.' };
+  }
+
+  const retained = formData.getAll('galleryPosition').map((position) =>
+    typeof position === 'string' && /^\d+$/.test(position) ? Number(position) : -1,
+  );
+  const uploads = newCover ? [newCover, ...newGallery] : newGallery;
+  if (
+    retained.length + newGallery.length > maxGalleryPhotos ||
+    uploads.some((file) => file.size > maxPhotoBytes) ||
+    uploads.reduce((bytes, file) => bytes + file.size, 0) > maxUploadBytes
+  ) {
+    return { error: 'До 20 фото в галерее, до 5 МБ на фото и до 20 МБ за сохранение.' };
+  }
+
   try {
     const prisma = getPrisma();
-    const category = await prisma.category.findUnique({ where: { key: categoryKey } });
+    const [category, existing] = await Promise.all([
+      prisma.category.findUnique({ where: { key: categoryKey }, select: { key: true } }),
+      id === null ? null : prisma.product.findUnique({
+        where: { id },
+        select: { mainImage: true, updatedAt: true, images: { select: { src: true, position: true } } },
+      }),
+    ]);
     if (!category) return { error: 'Выбери существующую категорию.' };
+    if (id !== null && (!existing || existing.updatedAt.getTime() !== editedAt.getTime())) {
+      return { error: 'Карточка уже изменилась. Открой её заново.' };
+    }
+    if (!newCover && !existing?.mainImage) return { error: 'Добавь главное фото.' };
 
-    const { count } = await prisma.product.updateMany({
-      where: { id, updatedAt: editedAt },
-      data: { name, priceKopecks, stock, categoryKey, status, description, advantages, characteristics },
+    const previousPhotos = new Map(existing?.images.map(({ position, src }) => [position, src]));
+    const keptPhotos = [...new Set(retained)].map((position) => previousPhotos.get(position));
+    if (keptPhotos.some((src) => src === undefined)) return { error: 'Проверь список фотографий.' };
+
+    const images: Buffer[] = [];
+    try {
+      for (const file of uploads) images.push(await prepareProductImage(file));
+    } catch {
+      return { error: 'Не удалось прочитать фото. Подойдут JPG, PNG и WebP до 40 мегапикселей.' };
+    }
+
+    const urls = await storeProductImages(images);
+    const gallery = [...keptPhotos, ...urls.slice(newCover ? 1 : 0)]
+      .flatMap((src, position) => src ? [{ src, position }] : []);
+    const mainImage = newCover ? urls[0] : existing!.mainImage;
+    const data = { name, priceKopecks, stock, categoryKey, status, description, advantages, characteristics, mainImage };
+
+    const result = await prisma.$transaction(async (tx) => {
+      if (id === null) {
+        const { _max } = await tx.product.aggregate({
+          where: { categoryKey },
+          _max: { position: true },
+        });
+        return tx.product.create({
+          data: { ...data, position: (_max.position ?? -1) + 1, images: { create: gallery } },
+          select: { id: true },
+        });
+      }
+
+      const { count } = await tx.product.updateMany({ where: { id, updatedAt: editedAt }, data });
+      if (!count) return null;
+      await tx.productImage.deleteMany({ where: { productId: id } });
+      if (gallery.length) {
+        await tx.productImage.createMany({ data: gallery.map((photo) => ({ ...photo, productId: id })) });
+      }
+      return { id };
     });
+    if (!result) return { error: 'Карточка уже изменилась. Открой её заново.' };
 
     refreshProducts();
-    if (!count) return { error: 'Товар изменился или был удалён. Закрой форму и открой его заново.' };
-    return { message: 'Товар сохранён.' };
+    revalidatePath(`/admin/products/${result.id}`);
+    return { id: result.id };
   } catch (error) {
     console.error('Ошибка сохранения товара:', error);
     return { error: 'Не удалось сохранить товар. Попробуй ещё раз.' };

@@ -53,10 +53,6 @@ export async function getAdminProducts({ query, category, status, page }: Produc
         mainImage: true,
         priceKopecks: true,
         stock: true,
-        categoryKey: true,
-        description: true,
-        advantages: true,
-        characteristics: true,
         status: true,
         updatedAt: true,
         category: { select: { title: true } },
@@ -69,3 +65,21 @@ export async function getAdminProducts({ query, category, status, page }: Produc
 }
 
 export type AdminProduct = Awaited<ReturnType<typeof getAdminProducts>>['products'][number];
+
+export function getEditableProduct(id: number) {
+  return getPrisma().product.findUnique({
+    where: { id },
+    include: {
+      images: { orderBy: { position: 'asc' }, select: { src: true, position: true } },
+    },
+  });
+}
+
+export function getProductCategories() {
+  return getPrisma().category.findMany({
+    orderBy: [{ position: 'asc' }, { key: 'asc' }],
+    select: { key: true, title: true },
+  });
+}
+
+export type EditableProduct = NonNullable<Awaited<ReturnType<typeof getEditableProduct>>>;
