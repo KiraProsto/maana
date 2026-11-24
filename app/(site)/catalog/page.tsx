@@ -4,27 +4,27 @@ import MasterSection from './components/MasterSection';
 import ToTopButton from './components/ToTopButton';
 import CatalogContent from './CatalogContent';
 
-import { products } from '@/app/data/products';
-import { holders } from '@/app/data/holders';
-import { sachets } from '@/app/data/sachets';
+import { getCatalogProducts, getMasterClasses } from '@/app/lib/catalog/server';
 import { Suspense } from 'react';
 
 export const metadata: Metadata = {
   title: 'МААНА | Каталог',
 };
 
-export default function HomePage() {
+export const dynamic = 'force-dynamic';
+
+export default async function CatalogPage() {
+  const [products, masterClasses] = await Promise.all([
+    getCatalogProducts(),
+    getMasterClasses(),
+  ]);
   return (
     <>
       <CatalogSection />
-      <MasterSection />
+      <MasterSection masterClasses={masterClasses} />
 
       <Suspense fallback={null}>
-        <CatalogContent
-          products={products}
-          holders={holders}
-          sachets={sachets}
-        />
+        <CatalogContent products={products} />
       </Suspense>
 
       <ToTopButton />

@@ -3,18 +3,16 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import styles from './MasterSection.module.css';
-import { masterClasses } from '@/app/data/masterClasses';
+import type { CatalogMasterClass } from '@/app/lib/catalog/types';
 import dynamic from 'next/dynamic';
 
 const MasterModal = dynamic(() => import('./Modal/MasterModal'), {
   ssr: false,
 });
-type MasterClass = (typeof masterClasses)[number];
+export default function MasterSection({ masterClasses }: { masterClasses: CatalogMasterClass[] }) {
+  const [selected, setSelected] = useState<CatalogMasterClass | null>(null);
 
-export default function MasterSection() {
-  const [selected, setSelected] = useState<MasterClass | null>(null);
-
-  const openModal = (item: MasterClass) => setSelected(item);
+  const openModal = (item: CatalogMasterClass) => setSelected(item);
 
   return (
     <section
@@ -32,7 +30,7 @@ export default function MasterSection() {
       <div className={styles.masterCards}>
         {masterClasses.map((item, index) => (
           <button
-            key={index}
+            key={item.id}
             className={styles.masterCard}
             role="button"
             aria-label={`Открыть мастер-класс: ${item.title}`}

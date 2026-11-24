@@ -9,9 +9,8 @@ import styles from '../checkout.module.css';
 import { useCart } from '@/app/context/CartContext';
 import { useDelivery } from '@/app/context/DeliveryContext';
 import { useSearchParams } from 'next/navigation';
-import { products } from '@/app/data/products';
-import { holders } from '@/app/data/holders';
-import { sachets } from '@/app/data/sachets';
+import { getCartProducts, getCartTotal } from '@/app/lib/catalog/cart';
+import type { ProductSummary } from '@/app/lib/catalog/types';
 
 type FormData = {
   fio: string;
@@ -31,39 +30,21 @@ function calcMarketplaceCost(weightGrams: number): number {
   return 500;
 }
 
-export default function CheckoutForm() {
+export default function CheckoutForm({ products }: { products: ProductSummary[] }) {
   const router = useRouter();
   const { cart } = useCart();
   const { deliveryCost, deliveryDays, setDelivery, setDeliveryLoading } =
     useDelivery();
   const params = useSearchParams();
   const singleId = params.get('product');
-  const allProducts = [...products, ...holders, ...sachets];
+  const items = getCartProducts(products, cart, singleId);
 
   const [cdekLoading, setCdekLoading] = useState(false);
   const [cdekError, setCdekError] = useState<string | null>(null);
 
-  const totalItems = singleId
-    ? cart[singleId] || 1
-    : Object.values(cart).reduce((s, c) => s + c, 0);
+  const totalItems = items.reduce((sum, item) => sum + item.count, 0);
   const estimatedWeight = Math.max(300, totalItems * 300);
   const marketplaceCost = calcMarketplaceCost(estimatedWeight);
-
-  let total = 0;
-  if (singleId) {
-    const product = allProducts.find((p) => p.id === Number(singleId));
-    if (product) {
-      total =
-        Number(String(product.price).replace(/\D/g, '')) *
-        (cart[singleId] || 1);
-    }
-  } else {
-    total = Object.entries(cart).reduce((sum, [id, count]) => {
-      const product = allProducts.find((p) => p.id === Number(id));
-      if (!product) return sum;
-      return sum + Number(String(product.price).replace(/\D/g, '')) * count;
-    }, 0);
-  }
 
   const {
     register,
@@ -139,10 +120,12 @@ export default function CheckoutForm() {
     }, 700);
 
     return () => clearTimeout(timer);
-  }, [deliveryValue, cityValue]);
+  }, [deliveryValue, cityValue, estimatedWeight, marketplaceCost]);
 
   const onSubmit = async (data: FormData) => {
-    const grandTotal = total + deliveryCost;
+    if (!items.length) return;
+
+    const grandTotal = (getCartTotal(items) + Math.round(deliveryCost * 100)) / 100;
 
     try {
       const res = await fetch('/api/create-payment', {
@@ -162,16 +145,8 @@ export default function CheckoutForm() {
             deliveryCost: String(deliveryCost),
             comment: data.comment || '',
             items: JSON.stringify(
-              (singleId
-                ? allProducts.filter((p) => p.id === Number(singleId))
-                : Object.keys(cart)
-                    .map((id) => allProducts.find((p) => p.id === Number(id)))
-                    .filter(Boolean)
-              ).map((p) => ({
-                id: p!.id,
-                name: p!.name,
-                count: cart[String(p!.id)] || 1,
-                price: Number(String(p!.price).replace(/\D/g, '')),
+              items.map(({ id, name, count, priceKopecks }) => ({
+                id, name, count, price: priceKopecks / 100,
               })),
             ),
           },
@@ -383,6 +358,7 @@ export default function CheckoutForm() {
       <button
         className={styles.checkoutBtn}
         type="submit"
+        disabled={items.length === 0}
         aria-label="Отправить заказ">
         Заказать
       </button>

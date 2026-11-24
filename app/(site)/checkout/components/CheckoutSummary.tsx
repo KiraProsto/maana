@@ -1,66 +1,21 @@
 'use client';
 
 import { useCart } from '@/app/context/CartContext';
-import { products } from '@/app/data/products';
-import { holders } from '@/app/data/holders';
-import { sachets } from '@/app/data/sachets';
-import CheckoutItem, { ICheckoutItem } from './CheckoutItem';
+import { getCartProducts, getCartTotal } from '@/app/lib/catalog/cart';
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { ProductSummary } from '@/app/lib/catalog/types';
+import CheckoutItem from './CheckoutItem';
 import styles from '../checkout.module.css';
 import { useSearchParams } from 'next/navigation';
 import { useDelivery } from '@/app/context/DeliveryContext';
 
-export default function CheckoutSummary() {
+export default function CheckoutSummary({ products }: { products: ProductSummary[] }) {
   const { cart } = useCart();
   const { deliveryCost, deliveryLoading } = useDelivery();
   const params = useSearchParams();
-
-  const singleId = params.get('product');
-
-  const allProducts = [...products, ...holders, ...sachets];
-
-  let items: ICheckoutItem[] = [];
-
-  if (singleId) {
-    const product = allProducts.find((p) => p.id === Number(singleId));
-
-    if (product) {
-      const count = cart[singleId] || 1;
-
-      items = [
-        {
-          id: product.id,
-          name: product.name,
-          price: Number(String(product.price).replace(/\D/g, '')),
-          mainImage: product.mainImage,
-          count,
-        },
-      ];
-    }
-  }
-
-  if (!singleId) {
-    items = Object.entries(cart)
-      .map(([id, count]) => {
-        const product = allProducts.find((p) => p.id === Number(id));
-        if (!product) return null;
-
-        return {
-          id: product.id,
-          name: product.name,
-          price: Number(String(product.price).replace(/\D/g, '')),
-          mainImage: product.mainImage,
-          count,
-        };
-      })
-      .filter((item): item is ICheckoutItem => item !== null);
-  }
-
-  const sumProducts = items.reduce(
-    (sum, item) => sum + item.price * item.count,
-    0,
-  );
-
-  const total = sumProducts + deliveryCost;
+  const items = getCartProducts(products, cart, params.get('product'));
+  const sumProducts = getCartTotal(items);
+  const total = sumProducts + Math.round(deliveryCost * 100);
 
   return (
     <section
@@ -79,7 +34,7 @@ export default function CheckoutSummary() {
         className={styles.checkoutTotal}
         aria-label="Итоговая стоимость заказа">
         <p>
-          Цена за товары: <span>{sumProducts} руб</span>
+          Цена за товары: <span>{formatRubles(sumProducts)}</span>
         </p>
         <p>
           Доставка:{' '}
@@ -92,7 +47,7 @@ export default function CheckoutSummary() {
           </span>
         </p>
         <p className={styles.checkoutTotalFinal}>
-          Итого: <span>{total} руб</span>
+          Итого: <span>{formatRubles(total)}</span>
         </p>
       </div>
     </section>

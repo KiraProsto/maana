@@ -3,12 +3,19 @@ import { Metadata } from 'next';
 import CheckoutForm from './components/CheckoutForm';
 import CheckoutSummary from './components/CheckoutSummary';
 import { Suspense } from 'react';
+import { getProductSummaries } from '@/app/lib/catalog/server';
+import { usesDatabaseCatalog } from '@/app/lib/catalog/source';
 
 export const metadata: Metadata = {
   title: 'МААНА | Оформление',
 };
 
-export default function CheckoutPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function CheckoutPage() {
+  const products = await getProductSummaries();
+  const paymentUnavailable = usesDatabaseCatalog();
+
   return (
     <main
       className={styles.checkout}
@@ -20,10 +27,14 @@ export default function CheckoutPage() {
 
       <div className={styles.checkoutLayout}>
         <Suspense fallback={<div>Загрузка...</div>}>
-          <CheckoutForm />
+          {paymentUnavailable ? (
+            <p role="status">Оплата в тестовом каталоге недоступна.</p>
+          ) : (
+            <CheckoutForm products={products} />
+          )}
         </Suspense>
         <Suspense fallback={<div>Загрузка...</div>}>
-          <CheckoutSummary />
+          <CheckoutSummary products={products} />
         </Suspense>
       </div>
     </main>

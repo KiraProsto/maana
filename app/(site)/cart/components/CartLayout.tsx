@@ -4,30 +4,12 @@ import { useCart } from '@/app/context/CartContext';
 import CartItem from './CartItem';
 import CartSummary from './CartSummary';
 import styles from '../CartPage.module.css';
-import { products } from '@/app/data/products';
-import { ICartProduct } from '../types';
-import { holders } from '@/app/data/holders';
-import { sachets } from '@/app/data/sachets';
+import { getCartProducts } from '@/app/lib/catalog/cart';
+import type { ProductSummary } from '@/app/lib/catalog/types';
 
-export default function CartLayout() {
+export default function CartLayout({ products }: { products: ProductSummary[] }) {
   const { cart } = useCart();
-
-  const items: ICartProduct[] = Object.entries(cart)
-    .map(([id, count]) => {
-      const allProducts = [...products, ...holders, ...sachets];
-      const product = allProducts.find((p) => p.id === Number(id));
-
-      if (!product) return null;
-
-      return {
-        id: product.id,
-        name: product.name,
-        price: Number(String(product.price).replace(/\D/g, '')),
-        mainImage: product.mainImage,
-        count,
-      };
-    })
-    .filter((item): item is ICartProduct => item !== null);
+  const items = getCartProducts(products, cart);
 
   return (
     <div

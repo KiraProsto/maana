@@ -6,6 +6,7 @@ import { holders } from '../app/data/holders';
 import { masterClasses } from '../app/data/masterClasses';
 import { products } from '../app/data/products';
 import { sachets } from '../app/data/sachets';
+import { priceToKopecks } from '../app/lib/catalog/price';
 
 const maxInt = 2_147_483_647;
 const categories = [
@@ -23,23 +24,6 @@ interface LegacyProduct {
   advantages?: string;
   characteristics?: string;
   gallery?: string[];
-}
-
-function priceToKopecks(price: string, label: string) {
-  const match = price.trim().match(/^(\d+(?:[ \u00a0\u202f]\d{3})*)(?:[,.](\d{1,2}))?\s*(?:руб\.?|₽)?$/iu);
-  if (!match) {
-    throw new Error(`Некорректная цена для ${label}: ${price}`);
-  }
-
-  const kopecks =
-    Number(match[1].replace(/\s/g, '')) * 100 +
-    Number((match[2] ?? '').padEnd(2, '0'));
-
-  if (!Number.isSafeInteger(kopecks) || kopecks > maxInt) {
-    throw new Error(`Цена вне допустимого диапазона для ${label}: ${price}`);
-  }
-
-  return kopecks;
 }
 
 async function prepareCatalog() {

@@ -4,25 +4,13 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import Image from 'next/image';
 import styles from './MasterModal.module.css';
 
-interface GalleryItem {
-  type: 'image' | 'video';
-  src: string;
-}
-
-interface MasterClass {
-  title: string;
-  description: string;
-  age: string;
-  duration: string;
-  price: string;
-  mainImage: string;
-  images: string[];
-}
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { CatalogMasterClass, GalleryItem } from '@/app/lib/catalog/types';
 
 interface MasterModalProps {
   isOpen: boolean;
   onClose: () => void;
-  item: MasterClass | null;
+  item: CatalogMasterClass | null;
 }
 
 export default function MasterModal({
@@ -43,10 +31,7 @@ export default function MasterModal({
 
     return [
       { type: 'image' as const, src: item.mainImage },
-      ...(item.images || []).map((src) => ({
-        type: (src.endsWith('.mp4') ? 'video' : 'image') as 'video' | 'image',
-        src,
-      })),
+      ...item.media,
     ];
   }, [item]);
 
@@ -191,9 +176,9 @@ export default function MasterModal({
           <p className={styles.info}>
             <strong>Время:</strong> {item.duration}
           </p>
-          {item.price && (
+          {item.priceKopecks !== null && (
             <p className={styles.info}>
-              <strong>Цена:</strong> {item.price}
+              <strong>Цена:</strong> {formatRubles(item.priceKopecks)}
             </p>
           )}
 

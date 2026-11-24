@@ -1,21 +1,20 @@
 'use client';
 
 import styles from '../CartPage.module.css';
-import { ICartProduct } from '../types';
+import { getCartTotal } from '@/app/lib/catalog/cart';
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { CartProduct } from '@/app/lib/catalog/types';
 import { useRouter } from 'next/navigation';
 
 interface ICartSummaryProps {
-  items: ICartProduct[];
+  items: CartProduct[];
 }
 
 export default function CartSummary({ items }: ICartSummaryProps) {
   const router = useRouter();
 
   const totalCount = items.reduce((sum, item) => sum + item.count, 0);
-  const totalPrice = items.reduce(
-    (sum, item) => sum + item.count * item.price,
-    0,
-  );
+  const totalPrice = getCartTotal(items);
 
   const isEmpty = items.length === 0;
 
@@ -36,7 +35,7 @@ export default function CartSummary({ items }: ICartSummaryProps) {
       <p className={styles.cartSummaryLine}>
         Итого:{' '}
         <span aria-live="polite" aria-atomic="true">
-          {totalPrice} руб
+          {formatRubles(totalPrice)}
         </span>
       </p>
 

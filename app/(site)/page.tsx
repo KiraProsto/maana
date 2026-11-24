@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: 'МААНА | Главная',
 };
 
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   return (
     <>

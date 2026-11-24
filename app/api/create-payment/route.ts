@@ -1,7 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
+import { usesDatabaseCatalog } from '@/app/lib/catalog/source';
 
 export async function POST(req: NextRequest) {
+  if (usesDatabaseCatalog()) {
+    return NextResponse.json(
+      { error: 'Оплата в тестовом каталоге недоступна.' },
+      { status: 503 },
+    );
+  }
+
   const body = await req.json();
   const { amount, description, returnUrl, metadata } = body;
 

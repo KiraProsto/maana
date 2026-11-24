@@ -3,11 +3,12 @@
 import Image from 'next/image';
 import { useCart } from '@/app/context/CartContext';
 import styles from '../CartPage.module.css';
-import { ICartProduct } from '../types';
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { CartProduct } from '@/app/lib/catalog/types';
 import { useRouter } from 'next/navigation';
 
 interface ICartItemProps {
-  item: ICartProduct;
+  item: CartProduct;
 }
 
 export default function CartItem({ item }: ICartItemProps) {
@@ -34,7 +35,7 @@ export default function CartItem({ item }: ICartItemProps) {
           {item.name}
         </div>
         <div className={styles.cartItemPrice} aria-label={`Стоимость`}>
-          {item.price * item.count} руб
+          {formatRubles(item.priceKopecks * item.count)}
         </div>
       </div>
 

@@ -1,15 +1,10 @@
 import Image from 'next/image';
 import styles from '../checkout.module.css';
 
-export interface ICheckoutItem {
-  id: number;
-  name: string;
-  price: number;
-  mainImage: string;
-  count: number;
-}
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { CartProduct } from '@/app/lib/catalog/types';
 
-export default function CheckoutItem({ item }: { item: ICheckoutItem }) {
+export default function CheckoutItem({ item }: { item: CartProduct }) {
   return (
     <div className={styles.checkoutItem}>
       <Image
@@ -24,7 +19,7 @@ export default function CheckoutItem({ item }: { item: ICheckoutItem }) {
         <div className={styles.checkoutItemName}>{item.name}</div>
         <div className={styles.checkoutItemCount}>{item.count} шт</div>
         <div className={styles.checkoutItemPrice}>
-          {item.price * item.count} руб
+          {formatRubles(item.priceKopecks * item.count)}
         </div>
       </div>
     </div>

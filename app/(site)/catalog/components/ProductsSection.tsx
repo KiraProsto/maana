@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import styles from './ProductsSection.module.css';
 import { useCart } from '@/app/context/CartContext';
 import dynamic from 'next/dynamic';
+import { formatRubles } from '@/app/lib/catalog/price';
+import type { CatalogProduct } from '@/app/lib/catalog/types';
 
 const ProductModal = dynamic(() => import('./Modal/ProductModal'), {
   ssr: false,
@@ -14,45 +16,17 @@ const PreorderModal = dynamic(() => import('./Modal/PreorderModal'), {
   ssr: false,
 });
 
-interface IProduct {
-  id: number;
-  name: string;
-  price: string;
-  mainImage: string;
-  description?: string;
-  advantages?: string;
-  characteristics?: string;
-  gallery?: string[];
-  count?: string;
-}
-
 interface IProps {
   id: string;
   title: string;
-  products: IProduct[];
+  products: CatalogProduct[];
 }
 
 export default function ProductsSection({ id, title, products }: IProps) {
   const { cart, add, remove, isReady } = useCart();
 
-  const [modalProduct, setModalProduct] = useState<IProduct | null>(null);
-  const [preorderProduct, setPreorderProduct] = useState<IProduct | null>(null);
-  const [inventory, setInventory] = useState<Record<string, number>>({});
-
-  useEffect(() => {
-    fetch('/api/inventory')
-      .then((r) => r.json())
-      .then((data: Record<string, number>) => setInventory(data))
-      .catch(() => {});
-  }, []);
-
-  const getStock = (item: IProduct): number => {
-    const key = String(item.id);
-    return inventory[key] !== undefined
-      ? inventory[key]
-      : Number(item.count ?? 1);
-  };
-
+  const [modalProduct, setModalProduct] = useState<CatalogProduct | null>(null);
+  const [preorderProduct, setPreorderProduct] = useState<CatalogProduct | null>(null);
   return (
     <section
       id={id}
@@ -70,7 +44,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
         {products.map((item) => {
           const idStr = String(item.id);
           const cartCount = cart[idStr] || 0;
-          const stock = getStock(item);
+          const stock = item.stock;
           const isOutOfStock = stock === 0;
 
           return (
@@ -94,7 +68,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 className={styles.productCardImg}
               />
               <div className={styles.productCardName}>{item.name}</div>
-              <div className={styles.productCardPrice}>{item.price}</div>
+              <div className={styles.productCardPrice}>{formatRubles(item.priceKopecks)}</div>
 
               {isOutOfStock ? (
                 <div
@@ -157,7 +131,7 @@ export default function ProductsSection({ id, title, products }: IProps) {
                 src,
               })),
             ],
-            stock: getStock(modalProduct),
+            stock: modalProduct.stock,
           }}
         />
       )}
