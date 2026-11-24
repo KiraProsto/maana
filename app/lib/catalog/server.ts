@@ -1,8 +1,7 @@
 import 'server-only';
 
 import { readFile } from 'node:fs/promises';
-import { PrismaPg } from '@prisma/adapter-pg';
-import { PrismaClient } from '@/app/generated/prisma/client';
+import { getPrisma } from '@/app/lib/prisma';
 import { holders } from '@/app/data/holders';
 import { masterClasses } from '@/app/data/masterClasses';
 import { products } from '@/app/data/products';
@@ -10,17 +9,6 @@ import { sachets } from '@/app/data/sachets';
 import { priceToKopecks } from './price';
 import { usesDatabaseCatalog } from './source';
 import type { CatalogMasterClass, CatalogProduct, ProductSummary } from './types';
-
-const globalPrisma = globalThis as typeof globalThis & { maanaPrisma?: PrismaClient };
-
-function getPrisma() {
-  const connectionString = process.env.DATABASE_URL;
-  if (!connectionString) throw new Error('Укажите DATABASE_URL для каталога.');
-
-  return (globalPrisma.maanaPrisma ??= new PrismaClient({
-    adapter: new PrismaPg({ connectionString }),
-  }));
-}
 
 const published = { status: 'PUBLISHED' as const };
 const productSummaryFields = {

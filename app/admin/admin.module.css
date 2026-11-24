@@ -104,58 +104,6 @@
   padding-left: 30px;
 }
 
-/* ========================= */
-/*        DASHBOARD          */
-/* ========================= */
-
-.dashboard {
-  padding: 40px 80px;
-}
-
-.dashboardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-
-.dashboardTitle {
-  font-size: 56px;
-  font-weight: 200;
-}
-
-.dashboardNote {
-  color: var(--color-gray-text);
-}
-
-.logoutBtn {
-  padding: 12px 40px;
-  background: #fff;
-  border: 2px solid var(--color-accent);
-  border-radius: 55px;
-  cursor: pointer;
-  font-size: 16px;
-  font-family: var(--font-main);
-  transition: 0.2s;
-}
-
-.logoutBtn:hover {
-  background: var(--color-accent);
-  color: #fff;
-}
-
-/* TABLET */
-@media (max-width: 1024px) {
-  .dashboard {
-    padding: 30px 40px;
-  }
-
-  .dashboardTitle {
-    font-size: 42px;
-  }
-}
-
 /* MOBILE */
 @media (max-width: 768px) {
   .loginCard {
@@ -182,18 +130,6 @@
     padding: 14px 0;
     font-size: 17px;
   }
-
-  .dashboard {
-    padding: 20px;
-  }
-
-  .dashboardHeader {
-    flex-wrap: wrap;
-  }
-
-  .dashboardTitle {
-    font-size: 32px;
-  }
 }
 
 @media (max-width: 420px) {
@@ -204,9 +140,5 @@
 
   .logo {
     font-size: 44px;
-  }
-
-  .dashboardTitle {
-    font-size: 26px;
   }
 }
