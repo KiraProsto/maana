@@ -13,6 +13,32 @@ interface MasterModalProps {
   item: CatalogMasterClass | null;
 }
 
+function Description({ text }: { text: string }) {
+  const blocks: { list: boolean; lines: string[] }[] = [];
+  let current: (typeof blocks)[number] | undefined;
+  for (const line of text.trim().split(/\r?\n/)) {
+    const value = line.trim();
+    if (!value) {
+      current = undefined;
+      continue;
+    }
+    const list = /^·\s*\S/.test(value);
+    if (!current || current.list !== list) {
+      current = { list, lines: [] };
+      blocks.push(current);
+    }
+    current.lines.push(list ? value.slice(1).trim() : value);
+  }
+
+  return (
+    <div className={styles.desc}>
+      {blocks.map(({ list, lines }, index) => list
+        ? <ul key={index}>{lines.map((line, item) => <li key={item}>{line}</li>)}</ul>
+        : <p key={index}>{lines.join('\n')}</p>)}
+    </div>
+  );
+}
+
 export default function MasterModal({
   isOpen,
   onClose,
@@ -167,7 +193,7 @@ export default function MasterModal({
           </h3>
 
           {item.description && (
-            <p className={styles.desc}>{item.description}</p>
+            <Description text={item.description} />
           )}
 
           <p className={styles.info}>

@@ -127,6 +127,14 @@
   white-space: pre-line;
 }
 
+.desc > * + * {
+  margin-top: 0.65em;
+}
+
+.desc ul {
+  padding-left: 1.25em;
+}
+
 .info {
   margin-bottom: 15px;
   font-weight: 200;

@@ -197,3 +197,89 @@
     max-width: 180px;
   }
 }
+
+.threeColumns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.ageOptions,
+.moveButtons,
+.previewDetails {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.ageOptions button[aria-pressed='true'] {
+  border-color: var(--admin-green);
+  background: #e0ece5;
+}
+
+.previewMedia {
+  position: relative;
+}
+
+.ageBadge,
+.mediaNumber {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #fff;
+  color: #232320;
+  font-size: 11px;
+}
+
+.previewDetails {
+  justify-content: space-between;
+  color: var(--admin-muted);
+}
+
+.deleteCard {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #edd5cf;
+  border-radius: 18px;
+  background: #fff;
+}
+
+.galleryTile {
+  min-width: 0;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: #232320;
+  object-fit: cover;
+}
+
+.moveButtons {
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.moveButtons button {
+  min-width: 28px;
+  min-height: 27px;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.moveButtons button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+@media (max-width: 570px) {
+  .threeColumns {
+    grid-template-columns: 1fr;
+  }
+}

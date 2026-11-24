@@ -111,7 +111,7 @@ export async function getMasterClasses(): Promise<CatalogMasterClass[]> {
   }
 
   const rows = await getPrisma().masterClass.findMany({
-    where: published,
+    where: { ...published, deletionToken: null },
     orderBy: [{ position: 'asc' }, { id: 'asc' }],
     select: {
       id: true,

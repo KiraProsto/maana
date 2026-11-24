@@ -56,18 +56,21 @@ model ProductImage {
 }
 
 model MasterClass {
-  id           Int                @id @default(autoincrement())
-  legacyKey    String?            @unique
-  title        String
-  description  String
-  age          String
-  duration     String
-  priceKopecks Int?
-  mainImage    String
-  status       PublicationStatus  @default(DRAFT)
-  position     Int
-  updatedAt    DateTime           @updatedAt
-  media        MasterClassMedia[]
+  id            Int                @id @default(autoincrement())
+  legacyKey     String?            @unique
+  title         String
+  description   String
+  age           String
+  duration      String
+  priceKopecks  Int?
+  mainImage     String
+  status        PublicationStatus  @default(DRAFT)
+  position      Int
+  deletionToken String?            @db.Uuid
+  updatedAt     DateTime           @updatedAt
+  media         MasterClassMedia[]
+
+  @@index([deletionToken])
 }
 
 model MasterClassMedia {

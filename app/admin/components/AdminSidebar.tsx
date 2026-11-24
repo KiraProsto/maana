@@ -9,7 +9,7 @@ const roleNames = {
   admin: 'Администратор',
 };
 
-export default function AdminSidebar({ session }: { session: SessionPayload }) {
+export default function AdminSidebar({ session, section = 'products' }: { session: SessionPayload; section?: 'products' | 'masterclasses' }) {
   return (
       <aside className={styles.sidebar}>
         <div>
@@ -22,8 +22,8 @@ export default function AdminSidebar({ session }: { session: SessionPayload }) {
           </Link>
 
           <nav className={styles.navigation} aria-label="Разделы админ-панели">
-            <Link href="/admin" aria-current="page">Товары</Link>
-            <span aria-disabled="true">Мастер-классы</span>
+            <Link href="/admin" aria-current={section === 'products' ? 'page' : undefined}>Товары</Link>
+            <Link href="/admin/masterclasses" aria-current={section === 'masterclasses' ? 'page' : undefined}>Мастер-классы</Link>
             <span aria-disabled="true">Настройки</span>
           </nav>
         </div>

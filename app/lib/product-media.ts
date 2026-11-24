@@ -5,7 +5,7 @@ import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
 
-const filenamePattern = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\.webp$/;
+const filenamePattern = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\.(?:webp|mp4)$/;
 
 function uploadDirectory() {
   return resolve(process.env.PRODUCT_UPLOAD_DIR || 'data/product-uploads');
@@ -35,17 +35,21 @@ export async function prepareProductImage(file: File) {
     .toBuffer();
 }
 
-export async function storeProductImages(images: Buffer[]) {
-  if (!images.length) return [];
+export function storeProductImages(images: Buffer[]) {
+  return storeUploadedMedia(images.map((bytes) => ({ bytes, extension: 'webp' })));
+}
+
+export async function storeUploadedMedia(files: { bytes: Buffer; extension: 'webp' | 'mp4' }[]) {
+  if (!files.length) return [];
 
   const directory = uploadDirectory();
   await mkdir(directory, { recursive: true });
   const filenames: string[] = [];
 
   try {
-    for (const image of images) {
-      const filename = `${randomUUID()}.webp`;
-      await writeFile(join(directory, filename), image, { flag: 'wx' });
+    for (const { bytes, extension } of files) {
+      const filename = `${randomUUID()}.${extension}`;
+      await writeFile(join(directory, filename), bytes, { flag: 'wx' });
       filenames.push(filename);
     }
   } catch (error) {
