@@ -2,7 +2,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import styles from './Footer.module.css';
 
-export default function Footer() {
+import { phoneHref } from '@/app/lib/site-settings';
+import type { SiteSettings } from '@/app/lib/site-settings';
+
+export default function Footer({ settings }: { settings: SiteSettings }) {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
@@ -48,9 +51,9 @@ export default function Footer() {
           <span className={styles.footerSep}>·</span>
           <span>Самозанятая: Ю.С. Булатова</span>
           <span className={styles.footerSep}>·</span>
-          <a href="tel:+79785278375">+7 (978) 527-83-75</a>
+          <a href={phoneHref(settings.phone)}>{settings.phone}</a>
           <span className={styles.footerSep}>·</span>
-          <a href="mailto:juliya.ist0508@gmail.com">juliya.ist0508@gmail.com</a>
+          <a href={`mailto:${settings.email}`}>{settings.email}</a>
         </div>
 
         <div className={styles.footerDocs}>

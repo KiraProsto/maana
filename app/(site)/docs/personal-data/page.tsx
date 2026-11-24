@@ -1,6 +1,8 @@
+import { getSiteSettings } from '@/app/lib/site-settings-server';
 import styles from '../docs.module.css';
 
-export default function PersonalDataConsentPage() {
+export default async function PersonalDataConsentPage() {
+  const { email } = await getSiteSettings();
   return (
     <main className={styles.docPage}>
       <h1>Согласие на обработку персональных данных</h1>
@@ -10,7 +12,7 @@ export default function PersonalDataConsentPage() {
         требований Федерального закона от 27.07.2006 № 152‑ФЗ «О персональных
         данных» свободно, своей волей и в своём интересе даю своё согласие{' '}
         самозанятая Булатова Ю.С. (далее — «Компания», адрес электронной почты:
-        juliya.ist0508@gmail.com) на обработку моих персональных данных,
+        {email}) на обработку моих персональных данных,
         указанных при оформлении заказа путём заполнения веб‑формы на сайте
         https://maana.ru (далее — «Сайт»), направляемой (заполненной) с
         использованием Сайта.
@@ -113,7 +115,7 @@ export default function PersonalDataConsentPage() {
         </li>
         <li>
           согласие может быть отозвано мной путём направления письменного
-          заявления на электронный адрес Компании: juliya.ist0508@gmail.com с
+          заявления на электронный адрес Компании: {email} с
           пометкой «Отзыв согласия на обработку персональных данных»;
         </li>
         <li>

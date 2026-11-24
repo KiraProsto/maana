@@ -1,7 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import styles from './PreorderModal.module.css';
+import SocialLinks from '@/app/components/SocialLinks';
+import { useSiteSettings } from '@/app/context/SiteSettingsContext';
+import { phoneHref } from '@/app/lib/site-settings';
 
 interface PreorderModalProps {
   isOpen: boolean;
@@ -14,6 +16,7 @@ export default function PreorderModal({
   onClose,
   productName,
 }: PreorderModalProps) {
+  const settings = useSiteSettings();
   if (!isOpen) return null;
 
   return (
@@ -43,32 +46,12 @@ export default function PreorderModal({
         </p>
 
         <p className={styles.tel}>
-          <strong>Телефон:</strong> +7 (978) 527‑83‑75
+          <strong>Телефон:</strong>{' '}
+          <a href={phoneHref(settings.phone)}>{settings.phone}</a>
+          <br />
+          <a href={`mailto:${settings.email}`}>{settings.email}</a>
         </p>
-
-        <div className={styles.socials}>
-          <a
-            href="https://max.ru/u/f9LHodD0cOIr-W0FBa3_vxtJcRG8Q_nSDP5cOTUofBVzeVgrKyBM-jZyqtM"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Написать в MAX">
-            <Image src="/icons/message/max.svg" alt="" width={38} height={38} />
-          </a>
-          <a
-            href="https://t.me/HyggeCandleS"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Написать в Telegram">
-            <Image src="/icons/message/tg.svg" alt="" width={38} height={38} />
-          </a>
-          <a
-            href="https://vk.ru/hugge_aura"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Написать в VK">
-            <Image src="/icons/message/vk.svg" alt="" width={38} height={38} />
-          </a>
-        </div>
+        <SocialLinks settings={settings} className={styles.socials} />
       </div>
     </div>
   );

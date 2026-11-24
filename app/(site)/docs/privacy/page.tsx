@@ -1,6 +1,8 @@
+import { getSiteSettings } from '@/app/lib/site-settings-server';
 import styles from '../docs.module.css';
 
-export default function PrivacyPolicyPage() {
+export default async function PrivacyPolicyPage() {
+  const { email } = await getSiteSettings();
   return (
     <main className={styles.docPage}>
       <h1>Политика конфиденциальности</h1>
@@ -286,7 +288,7 @@ export default function PrivacyPolicyPage() {
         <br />
         ИНН: 482308032032
         <br />
-        Email: juliya.ist0508@gmail.com
+        Email: {email}
         <br />
         Город: респ. Крым, г.Симферополь
       </p>

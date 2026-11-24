@@ -3,6 +3,9 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import Image from 'next/image';
 import styles from './MasterModal.module.css';
+import SocialLinks from '@/app/components/SocialLinks';
+import { useSiteSettings } from '@/app/context/SiteSettingsContext';
+import { phoneHref } from '@/app/lib/site-settings';
 
 import { formatRubles } from '@/app/lib/catalog/price';
 import type { CatalogMasterClass, GalleryItem } from '@/app/lib/catalog/types';
@@ -44,6 +47,7 @@ export default function MasterModal({
   onClose,
   item,
 }: MasterModalProps) {
+  const settings = useSiteSettings();
   const [index, setIndex] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef(0);
@@ -209,47 +213,12 @@ export default function MasterModal({
           )}
 
           <p className={styles.infoTel}>
-            <strong>Записаться:</strong> +7 (978) 527‑83‑75
+            <strong>Записаться:</strong>{' '}
+            <a href={phoneHref(settings.phone)}>{settings.phone}</a>
+            <br />
+            <a href={`mailto:${settings.email}`}>{settings.email}</a>
           </p>
-
-          <div className={styles.socials}>
-            <a
-              href="https://max.ru/u/f9LHodD0cOIr-W0FBa3_vxtJcRG8Q_nSDP5cOTUofBVzeVgrKyBM-jZyqtM"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Написать в MAX">
-              <Image
-                src="/icons/message/max.svg"
-                alt=""
-                width={38}
-                height={38}
-              />
-            </a>
-            <a
-              href="https://t.me/HyggeCandleS"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Написать в Telegram">
-              <Image
-                src="/icons/message/tg.svg"
-                alt=""
-                width={38}
-                height={38}
-              />
-            </a>
-            <a
-              href="https://vk.ru/hugge_aura"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Написать в VK">
-              <Image
-                src="/icons/message/vk.svg"
-                alt=""
-                width={38}
-                height={38}
-              />
-            </a>
-          </div>
+          <SocialLinks settings={settings} className={styles.socials} />
         </div>
       </div>
     </div>

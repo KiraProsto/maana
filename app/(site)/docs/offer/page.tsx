@@ -1,6 +1,8 @@
+import { getSiteSettings } from '@/app/lib/site-settings-server';
 import styles from '../docs.module.css';
 
-export default function OfferPage() {
+export default async function OfferPage() {
+  const { email } = await getSiteSettings();
   return (
     <main className={styles.docPage}>
       <h1>Публичная оферта</h1>
@@ -155,7 +157,7 @@ export default function OfferPage() {
         </li>
         <li>
           Для рассмотрения заявки на возврат требуется предоставить фото/видео
-          товара на электронную почту Продавца: juliya.ist0508@gmail.com.
+          товара на электронную почту Продавца: {email}.
         </li>
       </ul>
 
@@ -173,7 +175,7 @@ export default function OfferPage() {
       <ul>
         <li>
           Перед отправкой товара на возврат Покупатель обязан предварительно
-          написать на электронную почту Продавца: juliya.ist0508@gmail.com.
+          написать на электронную почту Продавца: {email}.
         </li>
         <li>
           В заявке на возврат необходимо указать данные заказа и приложить
@@ -234,7 +236,7 @@ export default function OfferPage() {
         <br />
         ИНН: 482308032032
         <br />
-        Email: juliya.ist0508@gmail.com
+        Email: {email}
         <br />
         Город: респ. Крым, г.Симферополь
       </p>

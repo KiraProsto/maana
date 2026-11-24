@@ -4,18 +4,24 @@ import styles from '@/app/layout.module.css';
 import { CartProvider } from '@/app/context/CartContext';
 import { DeliveryProvider } from '@/app/context/DeliveryContext';
 
-export default function SiteLayout({
+import { SiteSettingsProvider } from '@/app/context/SiteSettingsContext';
+import { getSiteSettings } from '@/app/lib/site-settings-server';
+
+export default async function SiteLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const settings = await getSiteSettings();
   return (
-    <CartProvider>
-      <DeliveryProvider>
-        <Header />
-        <main className={styles.main}>{children}</main>
-        <Footer />
-      </DeliveryProvider>
-    </CartProvider>
+    <SiteSettingsProvider settings={settings}>
+      <CartProvider>
+        <DeliveryProvider>
+          <Header />
+          <main className={styles.main}>{children}</main>
+          <Footer settings={settings} />
+        </DeliveryProvider>
+      </CartProvider>
+    </SiteSettingsProvider>
   );
 }
