@@ -3,11 +3,7 @@ import 'server-only';
 import { getPrisma } from '@/app/lib/prisma';
 import type { Prisma } from '@/app/generated/prisma/client';
 
-export const productStatuses = {
-  PUBLISHED: 'Опубликован',
-  DRAFT: 'Черновик',
-  HIDDEN: 'Скрыт',
-} as const;
+import { isProductStatus } from './product-statuses';
 
 export const productPageSize = 10;
 
@@ -25,7 +21,7 @@ export async function getAdminProducts({ query, category, status, page }: Produc
     ...(category && { categoryKey: category }),
     ...(status === 'OUT_OF_STOCK'
       ? { stock: 0 }
-      : status === 'PUBLISHED' || status === 'DRAFT' || status === 'HIDDEN'
+      : isProductStatus(status)
         ? { status }
         : {}),
     ...(query && {
@@ -57,6 +53,10 @@ export async function getAdminProducts({ query, category, status, page }: Produc
         mainImage: true,
         priceKopecks: true,
         stock: true,
+        categoryKey: true,
+        description: true,
+        advantages: true,
+        characteristics: true,
         status: true,
         updatedAt: true,
         category: { select: { title: true } },
@@ -67,3 +67,5 @@ export async function getAdminProducts({ query, category, status, page }: Produc
     return { products, categories, total, pageCount, currentPage };
   }, { isolationLevel: 'RepeatableRead' });
 }
+
+export type AdminProduct = Awaited<ReturnType<typeof getAdminProducts>>['products'][number];

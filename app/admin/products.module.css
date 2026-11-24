@@ -147,7 +147,7 @@
 
 .table {
   width: 100%;
-  min-width: 730px;
+  min-width: 850px;
   border-collapse: collapse;
   text-align: left;
 }
@@ -170,8 +170,8 @@
 }
 
 .table time,
-.table td:nth-child(3),
-.table td:nth-child(4) {
+.table td:nth-child(4),
+.table td:nth-child(5) {
   white-space: nowrap;
 }
 
@@ -276,5 +276,169 @@
 
   .filters input[type='search'] {
     grid-column: 1 / -1;
+  }
+}
+
+.bulkActions,
+.rowActions,
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulkActions {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #232320;
+  color: #fff;
+}
+
+.bulkActions button,
+.dangerButton {
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid #615f59;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bulkActions .dangerButton,
+.dangerButton {
+  border-color: #ab4734;
+  background: #ab4734;
+  color: #fff;
+}
+
+.actionMessage {
+  margin-bottom: 12px;
+  color: var(--admin-green);
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 48px;
+  text-align: center;
+}
+
+.table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  accent-color: var(--admin-green);
+  cursor: pointer;
+}
+
+.rowActions {
+  flex-wrap: nowrap;
+}
+
+.rowActions button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.rowActions button:hover {
+  background: #f3f2ee;
+}
+
+.rowActions .deleteIcon {
+  border-color: #edd5cf;
+  color: #ab4734;
+}
+
+.rowActions svg {
+  width: 17px;
+  height: 17px;
+}
+
+.productDialog {
+  position: fixed;
+  inset: 0;
+  width: min(540px, calc(100vw - 28px));
+  max-height: calc(100dvh - 30px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  background: #fff;
+  color: #232320;
+}
+
+.productDialog::backdrop {
+  background: rgb(0 0 0 / 38%);
+}
+
+.productDialog h2 {
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+
+.productDialog fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 0;
+}
+
+.productDialog label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.productDialog input,
+.productDialog select,
+.productDialog textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--admin-border);
+  border-radius: 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.productDialog textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.productFields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.dialogError {
+  margin-top: 12px;
+  color: #963f2f;
+}
+
+.dialogActions {
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.dialogActions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+@media (max-width: 420px) {
+  .productFields {
+    grid-template-columns: 1fr;
   }
 }

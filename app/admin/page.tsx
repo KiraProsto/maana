@@ -1,21 +1,16 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { verifySession } from '@/app/lib/auth/session';
-import { formatRubles } from '@/app/lib/catalog/price';
 import { logout } from './actions';
-import { getAdminProducts, productPageSize, productStatuses } from './products';
+import { getAdminProducts, productPageSize } from './products';
+import { isProductStatus, productStatuses } from './product-statuses';
+import ProductsTable from './components/ProductsTable';
 import styles from './products.module.css';
 
 const roleNames = {
   developer: 'Разработчик',
   admin: 'Администратор',
 };
-
-const dateFormatter = new Intl.DateTimeFormat('ru-RU', {
-  dateStyle: 'short',
-  timeStyle: 'short',
-  timeZone: 'Europe/Moscow',
-});
 
 interface AdminPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -31,7 +26,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const query = getParam(params.q);
   const category = getParam(params.category);
   const statusParam = getParam(params.status);
-  const status = statusParam === 'OUT_OF_STOCK' || Object.hasOwn(productStatuses, statusParam)
+  const status = statusParam === 'OUT_OF_STOCK' || isProductStatus(statusParam)
     ? statusParam
     : '';
   const pageParam = getParam(params.page);
@@ -118,52 +113,11 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               ))}
             </nav>
 
-            <div className={styles.tableWrap} role="region" aria-label="Список товаров" tabIndex={0}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th scope="col">Товар</th>
-                    <th scope="col">Категория</th>
-                    <th scope="col">Цена</th>
-                    <th scope="col">Остаток</th>
-                    <th scope="col">Статус</th>
-                    <th scope="col">Изменён</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {result.products.map((product) => (
-                    <tr key={product.id}>
-                      <th scope="row">
-                        <div className={styles.product}>
-                          <Image src={product.mainImage} alt="" width={52} height={52} />
-                          <div>
-                            <strong>{product.name}</strong>
-                            <small>ID {product.id} · Фото: {product._count.images + 1}</small>
-                          </div>
-                        </div>
-                      </th>
-                      <td>{product.category.title}</td>
-                      <td>{formatRubles(product.priceKopecks)}</td>
-                      <td>{product.stock} шт</td>
-                      <td>
-                        <span className={styles.status} data-status={product.status}>
-                          {productStatuses[product.status]}
-                        </span>
-                        {product.stock === 0 && <small className={styles.outOfStock}>Нет в наличии</small>}
-                      </td>
-                      <td>
-                        <time dateTime={product.updatedAt.toISOString()}>
-                          {dateFormatter.format(product.updatedAt)}
-                        </time>
-                      </td>
-                    </tr>
-                  ))}
-                  {result.products.length === 0 && (
-                    <tr><td colSpan={6}>Товары по этим условиям не найдены.</td></tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
+            <ProductsTable
+              key={productsHref(category, result.currentPage)}
+              products={result.products}
+              categories={result.categories}
+            />
 
             <div className={styles.tableFooter}>
               <p>
