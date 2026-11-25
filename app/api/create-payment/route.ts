@@ -2,12 +2,35 @@ import { NextRequest, NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 import { usesDatabaseCatalog } from '@/app/lib/catalog/source';
 
+import { CheckoutError, reserveOrder, startOrderPayment } from '@/app/lib/payments/orders';
+import { paymentConfig } from '@/app/lib/payments/provider';
+
 export async function POST(req: NextRequest) {
   if (usesDatabaseCatalog()) {
-    return NextResponse.json(
-      { error: 'Оплата в тестовом каталоге недоступна.' },
-      { status: 503 },
-    );
+    let orderId: string | undefined;
+    try {
+      const config = paymentConfig();
+      if (!config) return NextResponse.json({ error: 'Оплата сейчас недоступна.' }, { status: 503 });
+      const body = await req.json();
+      if (!body || typeof body !== 'object') return NextResponse.json({ error: 'Проверь заказ.' }, { status: 400 });
+
+      const order = await reserveOrder(body);
+      orderId = order.id;
+      const confirmationUrl = await startOrderPayment(order, config);
+      return NextResponse.json({ confirmationUrl });
+    } catch (error) {
+      if (error instanceof CheckoutError || error instanceof SyntaxError) {
+        return NextResponse.json(error instanceof CheckoutError
+          ? { error: error.message, restart: error.restart }
+          : { error: 'Проверь заказ.' }, { status: 409 });
+      }
+      console.error('Не удалось создать платёж:', error instanceof Error ? error.message : 'неизвестная ошибка');
+      return NextResponse.json({
+        error: orderId
+          ? `Не удалось получить ссылку на оплату. Повтори попытку в этой вкладке. Номер заказа: ${orderId}`
+          : 'Не удалось оформить заказ. Попробуй ещё раз.',
+      }, { status: 503 });
+    }
   }
 
   const body = await req.json();

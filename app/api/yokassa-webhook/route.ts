@@ -3,7 +3,10 @@ import { Resend } from 'resend';
 import fs from 'fs/promises';
 import path from 'path';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { settleOrder } from '@/app/lib/payments/orders';
+import { uuidPattern, yookassa } from '@/app/lib/payments/provider';
+import type { Payment } from '@/app/lib/payments/provider';
+import { notifyPaidOrder } from '@/app/lib/payments/notify';
 const inventoryPath = path.join(process.cwd(), 'data', 'inventory.json');
 
 async function decrementInventory(items: { id?: number; count: number }[]) {
@@ -30,10 +33,44 @@ async function decrementInventory(items: { id?: number; count: number }[]) {
 }
 
 export async function POST(req: NextRequest) {
-  const event = await req.json();
+  const event = await req.json().catch(() => null);
+  if (event?.event !== 'payment.succeeded' && event?.event !== 'payment.canceled') {
+    return NextResponse.json({ ok: true });
+  }
 
-  if (event.event === 'payment.succeeded') {
-    const payment = event.object;
+  const id = event.object?.id;
+  if (typeof id !== 'string' || !uuidPattern.test(id)) {
+    return NextResponse.json({ error: 'Некорректный ID платежа' }, { status: 400 });
+  }
+
+  const { YOKASSA_SHOP_ID, YOKASSA_SECRET_KEY } = process.env;
+  if (!YOKASSA_SHOP_ID || !YOKASSA_SECRET_KEY) {
+    return NextResponse.json({ error: 'ЮKassa не настроена' }, { status: 503 });
+  }
+
+  let payment: Payment;
+  try {
+    const authorization = 'Basic ' + Buffer.from(`${YOKASSA_SHOP_ID}:${YOKASSA_SECRET_KEY}`).toString('base64');
+    const response = await yookassa('/' + id, authorization);
+    if (!response.ok) return NextResponse.json({ error: 'Статус платежа недоступен' }, { status: 503 });
+    payment = await response.json();
+    if (payment.id !== id || !payment.amount) {
+      return NextResponse.json({ error: 'Ответ ЮKassa не соответствует запросу' }, { status: 503 });
+    }
+    if (payment.metadata?.orderId) {
+      if (payment.status !== 'succeeded' && payment.status !== 'canceled') {
+        return NextResponse.json({ error: 'Платёж ещё не завершён' }, { status: 503 });
+      }
+      const order = await settleOrder(payment);
+      if (!order) return NextResponse.json({ error: 'Платёж не сопоставлен с заказом' }, { status: 503 });
+      await notifyPaidOrder(order);
+      return NextResponse.json({ ok: true });
+    }
+  } catch {
+    return NextResponse.json({ error: 'Не удалось обработать платёж' }, { status: 503 });
+  }
+
+  if (event.event === 'payment.succeeded' && payment.status === 'succeeded') {
     const meta = payment.metadata || {};
 
     let items: { id?: number; name: string; count: number; price: number }[] =
@@ -69,7 +106,7 @@ export async function POST(req: NextRequest) {
     `;
 
     try {
-      await resend.emails.send({
+      await new Resend(process.env.RESEND_API_KEY).emails.send({
         from: 'Маана <orders@maana.ru>',
         to: 'juliya.ist0508@gmail.com',
         subject: `Новый заказ от ${meta.fio || 'клиента'}`,

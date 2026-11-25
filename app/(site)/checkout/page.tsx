@@ -4,6 +4,7 @@ import CheckoutForm from './components/CheckoutForm';
 import CheckoutSummary from './components/CheckoutSummary';
 import { Suspense } from 'react';
 import { getProductSummaries } from '@/app/lib/catalog/server';
+import { paymentConfig } from '@/app/lib/payments/provider';
 import { usesDatabaseCatalog } from '@/app/lib/catalog/source';
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function CheckoutPage() {
   const products = await getProductSummaries();
-  const paymentUnavailable = usesDatabaseCatalog();
+  const paymentUnavailable = usesDatabaseCatalog() && !paymentConfig();
 
   return (
     <main
@@ -28,7 +29,7 @@ export default async function CheckoutPage() {
       <div className={styles.checkoutLayout}>
         <Suspense fallback={<div>Загрузка...</div>}>
           {paymentUnavailable ? (
-            <p role="status">Оплата в тестовом каталоге недоступна.</p>
+            <p role="status">Оплата сейчас недоступна.</p>
           ) : (
             <CheckoutForm products={products} />
           )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -12,6 +12,8 @@ import { useSearchParams } from 'next/navigation';
 import { getCartProducts, getCartTotal } from '@/app/lib/catalog/cart';
 import type { ProductSummary } from '@/app/lib/catalog/types';
 
+import { estimateWeight, marketplaceCost } from '@/app/lib/payments/delivery';
+
 type FormData = {
   fio: string;
   phone: string;
@@ -22,13 +24,6 @@ type FormData = {
   consent: boolean;
   comment?: string;
 };
-
-function calcMarketplaceCost(weightGrams: number): number {
-  if (weightGrams <= 500) return 249;
-  if (weightGrams <= 1000) return 380;
-  if (weightGrams <= 2000) return 480;
-  return 500;
-}
 
 export default function CheckoutForm({ products }: { products: ProductSummary[] }) {
   const router = useRouter();
@@ -43,14 +38,15 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
   const [cdekError, setCdekError] = useState<string | null>(null);
 
   const totalItems = items.reduce((sum, item) => sum + item.count, 0);
-  const estimatedWeight = Math.max(300, totalItems * 300);
-  const marketplaceCost = calcMarketplaceCost(estimatedWeight);
+  const estimatedWeight = estimateWeight(totalItems);
+  const wbCost = marketplaceCost('WB', estimatedWeight);
+  const checkoutId = useRef<string | null>(null);
 
   const {
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<FormData>();
 
   const deliveryValue = watch('delivery');
@@ -62,7 +58,7 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
       setDelivery(0, null);
       setCdekError(null);
       const t = setTimeout(() => {
-        setDelivery(marketplaceCost, 'от 2 дней');
+        setDelivery(wbCost, 'от 2 дней');
         setDeliveryLoading(false);
       }, 600);
       return () => clearTimeout(t);
@@ -73,7 +69,7 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
       setDelivery(0, null);
       setCdekError(null);
       const t = setTimeout(() => {
-        setDelivery(249, 'от 2 дней');
+        setDelivery(marketplaceCost('OZON', estimatedWeight), 'от 2 дней');
         setDeliveryLoading(false);
       }, 600);
       return () => clearTimeout(t);
@@ -120,10 +116,11 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
     }, 700);
 
     return () => clearTimeout(timer);
-  }, [deliveryValue, cityValue, estimatedWeight, marketplaceCost]);
+  }, [deliveryValue, cityValue, estimatedWeight, wbCost]);
 
   const onSubmit = async (data: FormData) => {
-    if (!items.length) return;
+    if (!items.length || deliveryCost <= 0) return;
+    checkoutId.current ??= crypto.randomUUID();
 
     const grandTotal = (getCartTotal(items) + Math.round(deliveryCost * 100)) / 100;
 
@@ -132,6 +129,8 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          checkoutId: checkoutId.current,
+          items: items.map(({ id, count }) => ({ id, count })),
           amount: grandTotal.toFixed(2),
           description: `Заказ для ${data.fio}${data.comment ? `. Комментарий: ${data.comment}` : ''}`,
           returnUrl: `${window.location.origin}/payment-success`,
@@ -158,7 +157,8 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
       if (result.confirmationUrl) {
         router.push(result.confirmationUrl);
       } else {
-        alert('Ошибка при создании платежа');
+        if (result.restart) checkoutId.current = null;
+        alert(result.error || 'Ошибка при создании платежа');
       }
     } catch {
       alert('Что-то пошло не так');
@@ -358,7 +358,7 @@ export default function CheckoutForm({ products }: { products: ProductSummary[] 
       <button
         className={styles.checkoutBtn}
         type="submit"
-        disabled={items.length === 0}
+        disabled={!items.length || deliveryCost <= 0 || isSubmitting || cdekLoading}
         aria-label="Отправить заказ">
         Заказать
       </button>

@@ -92,3 +92,34 @@ model SiteSettings {
   vkUrl       String @default("")
   maxUrl      String @default("")
 }
+
+enum OrderStatus {
+  RESERVED
+  PAID
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @db.Uuid
+  status          OrderStatus @default(RESERVED)
+  paymentId       String?     @unique
+  confirmationUrl String?
+  requestHash     String
+  amountKopecks   Int
+  deliveryKopecks Int
+  customer        Json
+  createdAt       DateTime    @default(now())
+  notifiedAt      DateTime?
+  items           OrderItem[]
+}
+
+model OrderItem {
+  orderId      String @db.Uuid
+  order        Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    Int
+  name         String
+  priceKopecks Int
+  quantity     Int
+
+  @@id([orderId, productId])
+}
