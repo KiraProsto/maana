@@ -4,8 +4,9 @@ import { randomUUID } from 'node:crypto';
 import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import sharp from 'sharp';
+import { deleteMedia, getMediaStorage, putMedia } from './media-s3';
 
-const filenamePattern = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\.(?:webp|mp4)$/;
+export const filenamePattern = /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}\.(?:webp|mp4)$/;
 
 function uploadDirectory() {
   return resolve(process.env.PRODUCT_UPLOAD_DIR || 'data/product-uploads');
@@ -43,17 +44,21 @@ export async function storeUploadedMedia(files: { bytes: Buffer; extension: 'web
   if (!files.length) return [];
 
   const directory = uploadDirectory();
-  await mkdir(directory, { recursive: true });
+  const storage = getMediaStorage();
+  if (!storage) await mkdir(directory, { recursive: true });
   const filenames: string[] = [];
 
   try {
     for (const { bytes, extension } of files) {
       const filename = `${randomUUID()}.${extension}`;
-      await writeFile(join(directory, filename), bytes, { flag: 'wx' });
+      if (storage) await putMedia(storage, filename, bytes);
+      else await writeFile(join(directory, filename), bytes, { flag: 'wx' });
       filenames.push(filename);
     }
   } catch (error) {
-    await Promise.allSettled(filenames.map((filename) => unlink(join(directory, filename))));
+    await Promise.allSettled(filenames.map((filename) =>
+      storage ? deleteMedia(storage, filename) : unlink(join(directory, filename)),
+    ));
     throw error;
   }
 
