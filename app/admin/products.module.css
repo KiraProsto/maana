@@ -1,0 +1,515 @@
+.dashboard {
+  --admin-border: #e5e2db;
+  --admin-green: #385d51;
+  --admin-muted: #64645e;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  min-height: 100vh;
+  background: #f3f2ee;
+  color: #232320;
+  font-size: 14px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 22px 16px;
+  background: #fff;
+  border-right: 1px solid var(--admin-border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  text-decoration: none;
+}
+
+.brand img {
+  object-fit: contain;
+}
+
+.brand strong {
+  font-size: 18px;
+}
+
+.dashboard small {
+  display: block;
+  margin-top: 3px;
+  color: var(--admin-muted);
+  font-size: 12px;
+}
+
+.navigation {
+  display: grid;
+  gap: 6px;
+  margin-top: 28px;
+}
+
+.navigation a,
+.navigation span {
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-decoration: none;
+}
+
+.navigation a[aria-current] {
+  background: #e7eeea;
+  font-weight: 700;
+}
+
+.navigation span,
+.account > a {
+  color: var(--admin-muted);
+}
+
+.account {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  padding: 0 8px;
+}
+
+.content {
+  min-width: 0;
+  padding: 30px 36px;
+}
+
+.content h1 {
+  margin-bottom: 22px;
+  font-size: 36px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+}
+
+.filters input,
+.filters select,
+.searchButton,
+.secondaryButton {
+  min-height: 38px;
+  padding: 8px 15px;
+  border: 1px solid var(--admin-border);
+  border-radius: 999px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.searchButton,
+.secondaryButton {
+  cursor: pointer;
+}
+
+.searchButton {
+  border-color: var(--admin-green);
+  background: var(--admin-green);
+  color: #fff;
+}
+
+.secondaryButton {
+  display: inline-flex;
+  min-height: 32px;
+  align-items: center;
+  text-decoration: none;
+}
+
+.secondaryButton:hover {
+  border-color: var(--admin-green);
+}
+
+.categories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.categories a[aria-current] {
+  background: #232320;
+  color: #fff;
+}
+
+.tableWrap {
+  overflow-x: auto;
+  border: 1px solid var(--admin-border);
+  border-radius: 16px;
+  background: #fff;
+}
+
+.table {
+  width: 100%;
+  min-width: 850px;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.table th,
+.table td {
+  padding: 10px 14px;
+  border-bottom: 1px solid #efede8;
+}
+
+.table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+
+.table thead th {
+  color: var(--admin-muted);
+  font-size: 11px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.table time,
+.table td:nth-child(4),
+.table td:nth-child(5) {
+  white-space: nowrap;
+}
+
+.table time {
+  color: var(--admin-muted);
+}
+
+.product {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.product img {
+  flex: 0 0 52px;
+  object-fit: cover;
+  border-radius: 9px;
+  background: #f0ede7;
+}
+
+.product small {
+  font-weight: 400;
+}
+
+.status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #eceae5;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.status[data-status='PUBLISHED'] {
+  background: #e0ece5;
+  color: #285344;
+}
+
+.status[data-status='HIDDEN'] {
+  background: #f4e7db;
+  color: #694526;
+}
+
+.dashboard .outOfStock {
+  color: #963f2f;
+}
+
+.tableFooter,
+.pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tableFooter {
+  justify-content: space-between;
+  padding-top: 16px;
+  color: var(--admin-muted);
+}
+
+@media (max-width: 900px) {
+  .dashboard {
+    grid-template-columns: 165px minmax(0, 1fr);
+  }
+
+  .content {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dashboard {
+    display: block;
+  }
+
+  .sidebar {
+    gap: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--admin-border);
+  }
+
+  .navigation,
+  .account {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .content {
+    padding: 20px 14px;
+  }
+
+  .content h1 {
+    font-size: 28px;
+  }
+
+  .filters {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .filters input[type='search'] {
+    grid-column: 1 / -1;
+  }
+}
+
+.bulkActions,
+.rowActions,
+.dialogActions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.bulkActions {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  border-radius: 14px;
+  background: #232320;
+  color: #fff;
+}
+
+.bulkActions button,
+.dangerButton {
+  min-height: 36px;
+  padding: 7px 14px;
+  border: 1px solid #615f59;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.bulkActions .dangerButton,
+.dangerButton {
+  border-color: #ab4734;
+  background: #ab4734;
+  color: #fff;
+}
+
+.actionMessage {
+  margin-bottom: 12px;
+  color: var(--admin-green);
+}
+
+.table th:first-child,
+.table td:first-child {
+  width: 48px;
+  text-align: center;
+}
+
+.table input[type='checkbox'] {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+  accent-color: var(--admin-green);
+  cursor: pointer;
+}
+
+.rowActions {
+  flex-wrap: nowrap;
+}
+
+.rowActions button,
+.rowActions a {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid var(--admin-border);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.rowActions button:hover,
+.rowActions a:hover {
+  background: #f3f2ee;
+}
+
+.rowActions .deleteIcon {
+  border-color: #edd5cf;
+  color: #ab4734;
+}
+
+.rowActions svg {
+  width: 17px;
+  height: 17px;
+}
+
+.productDialog {
+  position: fixed;
+  inset: 0;
+  width: min(540px, calc(100vw - 28px));
+  max-height: calc(100dvh - 30px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  background: #fff;
+  color: #232320;
+}
+
+.productDialog::backdrop {
+  background: rgb(0 0 0 / 38%);
+}
+
+.productDialog h2 {
+  margin-bottom: 18px;
+  font-weight: 400;
+}
+
+.productDialog fieldset {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  border: 0;
+}
+
+.productDialog label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.productDialog input,
+.productDialog select,
+.productDialog textarea {
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 10px;
+  border: 1px solid var(--admin-border);
+  border-radius: 9px;
+  background: #fff;
+  color: inherit;
+  font: inherit;
+}
+
+.productDialog textarea {
+  min-height: 70px;
+  resize: vertical;
+}
+
+.dialogError {
+  margin-top: 12px;
+  color: #963f2f;
+}
+
+.dialogActions {
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
+.dialogActions button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.pageHeading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.primaryLink {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: var(--admin-green);
+  color: #fff;
+  text-decoration: none;
+}
+
+.undoNotices {
+  position: fixed;
+  z-index: 20;
+  inset: auto 12px max(18px, env(safe-area-inset-bottom)) 12px;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  max-height: 45vh;
+  overflow: auto;
+  padding: 4px;
+  pointer-events: none;
+}
+
+.undoNotice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: min(100%, 520px);
+  padding: 10px 12px 10px 16px;
+  border-radius: 26px;
+  background: #232320;
+  color: #fff;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 16%);
+  pointer-events: auto;
+}
+
+.undoCheck {
+  color: #a7d6c4;
+}
+
+.undoNotice p {
+  overflow-wrap: anywhere;
+}
+
+.undoNotice button {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #232320;
+  font: inherit;
+  cursor: pointer;
+}
+
+.undoNotice button:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.undoNotice .dismissNotice {
+  padding: 4px;
+  background: transparent;
+  color: #fff;
+  font-size: 18px;
+}
+
+.undoError {
+  margin-top: 3px;
+  color: #ffb9aa;
+}

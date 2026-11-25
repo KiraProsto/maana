@@ -1,16 +1,10 @@
 import styles from './Hits.module.css';
 import Link from 'next/link';
 import Image from 'next/image';
-import { products } from '@/app/data/products';
+import { getHits } from '@/app/lib/catalog/server';
 
-interface IProduct {
-  id: number;
-  name: string;
-  mainImage: string;
-}
-
-export default function Hits() {
-  const hits: IProduct[] = products.slice(0, 3);
+export default async function Hits() {
+  const hits = await getHits();
 
   return (
     <section className={styles.hits} id="hits">

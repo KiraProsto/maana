@@ -1,22 +1,24 @@
 import styles from './Hero.module.css';
 import Link from 'next/link';
 
-export default function Hero() {
+export default function Hero({ marqueeText }: { marqueeText: string }) {
   return (
     <section
       className={styles.hero}
       id="home"
       aria-label="Главный баннер сайта МААНА"
       role="banner">
-      <div className={styles.ticker} aria-hidden="true">
-        <div className={styles.tickerTrack}>
-          {Array.from({ length: 20 }).map((_, i) => (
-            <span key={i} className={styles.tickerText}>
-              MAAHA теперь с тобой. Добро пожаловать в ароматный дом.
-            </span>
-          ))}
+      {marqueeText && (
+        <div className={styles.ticker}>
+          <div className={styles.tickerTrack}>
+            {Array.from({ length: 20 }, (_, index) => (
+              <span key={index} className={styles.tickerText} aria-hidden={index > 0}>
+                {marqueeText}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
+      )}
 
       <video
         className={styles.heroVideo}

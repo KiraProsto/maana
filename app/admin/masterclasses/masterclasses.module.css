@@ -1,0 +1,125 @@
+.sectionTitle {
+  margin: 8px 0 14px;
+  font-size: 19px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 255px), 1fr));
+  gap: 16px;
+}
+
+.card,
+.newCard {
+  border: 1px solid var(--admin-border);
+  border-radius: 18px;
+  overflow: hidden;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+}
+
+.cover {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 6px;
+  aspect-ratio: 2;
+  padding: 12px;
+  background: #e9e1ec;
+}
+
+.cover img {
+  object-fit: cover;
+}
+
+.cover > span {
+  z-index: 1;
+}
+
+.age {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: #232320;
+  color: #fff;
+  font-size: 12px;
+}
+
+.body {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  flex: 1;
+  gap: 9px;
+  padding: 16px;
+}
+
+.body h3 {
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.details,
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.details {
+  align-self: start;
+  color: var(--admin-muted);
+}
+
+.actions {
+  margin-top: 10px;
+}
+
+.deleteButton {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border: 1px solid #edd5cf;
+  border-radius: 50%;
+  background: #fff;
+  color: #ab4734;
+  cursor: pointer;
+}
+
+.deleteButton svg {
+  width: 17px;
+  height: 17px;
+}
+
+.newCard {
+  display: grid;
+  min-height: 220px;
+  place-content: center;
+  justify-items: center;
+  gap: 9px;
+  border: 1px dashed #89a598;
+  background: #f5f8f6;
+  color: var(--admin-green);
+  text-decoration: none;
+}
+
+.newCard span {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  background: #e0ece5;
+  font-size: 24px;
+}
+
+.newCard:hover {
+  border-color: var(--admin-green);
+}

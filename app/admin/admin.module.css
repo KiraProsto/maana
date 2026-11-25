@@ -1,0 +1,144 @@
+/* В админке нет фиксированной шапки сайта — убираем отступ под неё */
+:global(body):has(.admin) {
+  padding-top: 0;
+}
+
+.admin {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================= */
+/*          LOGIN            */
+/* ========================= */
+
+.login {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 50px 40px;
+  background: #fafafa;
+  border-radius: 40px;
+}
+
+.logo {
+  font-family: var(--font-global);
+  font-size: 64px;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
+.loginTitle {
+  font-size: 32px;
+  font-weight: 200;
+  margin-bottom: 35px;
+}
+
+.loginForm {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.loginForm input {
+  width: 100%;
+  padding: 14px 30px;
+  border: 1px solid #ccc;
+  border-radius: 55px;
+  font-size: 16px;
+  transition: 0.2s;
+  font-family: var(--font-main);
+  background: #fff;
+}
+
+.loginForm input:focus {
+  border-color: var(--color-accent);
+  outline: none;
+  box-shadow: 0 0 6px rgba(242, 177, 59, 0.4);
+}
+
+.loginBtn {
+  margin-top: 10px;
+  align-self: center;
+  padding: 15px 80px;
+  background: var(--color-accent);
+  border-radius: 55px;
+  cursor: pointer;
+  border: none;
+  font-size: 18px;
+  font-family: var(--font-main);
+  transition: 0.2s;
+  color: #fff;
+}
+
+.loginBtn:hover {
+  background: var(--color-accent-hover);
+}
+
+.loginBtn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.inputError {
+  border-color: #e24b4a !important;
+}
+
+.errorMsg {
+  display: block;
+  font-size: 12px;
+  color: #e24b4a;
+  margin-top: -12px;
+  padding-left: 30px;
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+  .loginCard {
+    padding: 40px 25px;
+    border-radius: 25px;
+  }
+
+  .logo {
+    font-size: 52px;
+  }
+
+  .loginTitle {
+    font-size: 26px;
+    margin-bottom: 25px;
+  }
+
+  .loginForm input {
+    padding: 12px 25px;
+    font-size: 15px;
+  }
+
+  .loginBtn {
+    width: 100%;
+    padding: 14px 0;
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 420px) {
+  .loginCard {
+    padding: 30px 18px;
+    border-radius: 18px;
+  }
+
+  .logo {
+    font-size: 44px;
+  }
+}

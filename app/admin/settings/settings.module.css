@@ -1,0 +1,84 @@
+.settings {
+  max-width: 900px;
+}
+
+.actions {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.actions p {
+  color: var(--admin-muted);
+}
+
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.card {
+  display: grid;
+  min-width: 0;
+  gap: 20px;
+  padding: 26px 30px;
+  border: 1px solid var(--admin-border);
+  border-radius: 20px;
+  background: #fff;
+}
+
+.card label {
+  display: grid;
+  min-width: 0;
+  gap: 8px;
+}
+
+.card input {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 13px;
+  border: 1px solid var(--admin-border);
+  border-radius: 11px;
+  background: #fcfcfa;
+  color: inherit;
+  font: inherit;
+}
+
+.card input:focus-visible {
+  outline: 2px solid var(--admin-green);
+  outline-offset: 1px;
+}
+
+.contactFields,
+.socialFields {
+  display: grid;
+  gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid var(--admin-border);
+}
+
+.contactFields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.error {
+  margin-bottom: 12px;
+  color: #963f2f;
+}
+
+@media (max-width: 640px) {
+  .actions {
+    margin-bottom: 14px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .contactFields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

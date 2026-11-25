@@ -1,0 +1,125 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PublicationStatus {
+  DRAFT
+  PUBLISHED
+  HIDDEN
+}
+
+enum MediaKind {
+  IMAGE
+  VIDEO
+}
+
+model Category {
+  key      String    @id
+  title    String
+  position Int
+  products Product[]
+}
+
+model Product {
+  id              Int               @id @default(autoincrement())
+  categoryKey     String
+  category        Category          @relation(fields: [categoryKey], references: [key])
+  name            String
+  priceKopecks    Int
+  stock           Int               @default(0)
+  mainImage       String
+  description     String            @default("")
+  advantages      String            @default("")
+  characteristics String            @default("")
+  status          PublicationStatus @default(DRAFT)
+  position        Int
+  deletionToken   String?           @db.Uuid
+  updatedAt       DateTime          @updatedAt
+  images          ProductImage[]
+
+  @@index([categoryKey, position])
+  @@index([deletionToken])
+}
+
+model ProductImage {
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  position  Int
+  src       String
+
+  @@id([productId, position])
+}
+
+model MasterClass {
+  id            Int                @id @default(autoincrement())
+  legacyKey     String?            @unique
+  title         String
+  description   String
+  age           String
+  duration      String
+  priceKopecks  Int?
+  mainImage     String
+  status        PublicationStatus  @default(DRAFT)
+  position      Int
+  deletionToken String?            @db.Uuid
+  updatedAt     DateTime           @updatedAt
+  media         MasterClassMedia[]
+
+  @@index([deletionToken])
+}
+
+model MasterClassMedia {
+  masterClassId Int
+  masterClass   MasterClass @relation(fields: [masterClassId], references: [id], onDelete: Cascade)
+  position      Int
+  kind          MediaKind
+  src           String
+
+  @@id([masterClassId, position])
+}
+
+model SiteSettings {
+  id          Int    @id @default(1)
+  marqueeText String @default("")
+  phone       String @default("")
+  email       String @default("")
+  telegramUrl String @default("")
+  vkUrl       String @default("")
+  maxUrl      String @default("")
+}
+
+enum OrderStatus {
+  RESERVED
+  PAID
+  CANCELLED
+}
+
+model Order {
+  id              String      @id @db.Uuid
+  status          OrderStatus @default(RESERVED)
+  paymentId       String?     @unique
+  confirmationUrl String?
+  requestHash     String
+  amountKopecks   Int
+  deliveryKopecks Int
+  customer        Json
+  createdAt       DateTime    @default(now())
+  notifiedAt      DateTime?
+  items           OrderItem[]
+}
+
+model OrderItem {
+  orderId      String @db.Uuid
+  order        Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    Int
+  name         String
+  priceKopecks Int
+  quantity     Int
+
+  @@id([orderId, productId])
+}
